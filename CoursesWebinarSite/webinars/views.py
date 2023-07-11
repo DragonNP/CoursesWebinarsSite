@@ -1,8 +1,8 @@
-from django.db.models.expressions import NoneType
 from django.shortcuts import render
-from django.http import HttpResponse, Http404
+from django.http import Http404
 from webinars.models import Webinar, File, Music
 from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import redirect
 
 
 def show(request, id):
@@ -13,8 +13,7 @@ def show(request, id):
         webinar = Webinar.objects.get(id=id)
 
         return render(request, 'webinar_show.html',
-                      {'name': webinar.name, 'author': webinar.author, 'date': webinar.date, 'url': webinar.url,
-                       'files': webinar.files, 'music': webinar.music})
+                      {'name': webinar.name, 'author': webinar.author, 'date': webinar.date, 'url': webinar.url})
     except ObjectDoesNotExist as e:
         raise Http404('ID в базе данных не найдено')
 
@@ -52,4 +51,4 @@ def post_add(request):
         url = response[f'music_url_{str(i)}']
         Music.objects.create(url=url, webinar=webinar)
 
-    return HttpResponse('ОК!')
+    return redirect(f'/webinar/{webinar.id}')
