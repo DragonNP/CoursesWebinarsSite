@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Профиль</title>
+</head>
+<body>
+    Привет! {{name}} <a href="/logout">
+        <button>Выйти из акаунта</button>
+    </a>
+    </br>
+    </br>
+    Твои вебинары:
+    </br>
+    {% for id, name in webinars.items %}
+    <a href="/webinar/{{id}}">{{name}}</a>
+    <a href="/webinar/remove/{{id}}"><button type="button">x</button></a>
+    </br>
+    {% endfor %}
+
+    <a href="/webinar/add">
+        <button>Добавить вебинар</button>
+    </a>
+</body>
+
+</html>

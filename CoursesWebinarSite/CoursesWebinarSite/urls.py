@@ -18,10 +18,16 @@ from django.contrib import admin
 from django.urls import path
 from home import views as home
 from webinars import views as webinars
+from user import views as user
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home.index),
+    path('profile', user.profile),
+    path('login', user.login_page),
+    path('signup', user.signup),
+    path('logout', user.logout_user),
     path('webinar/add', webinars.add),
-    path('webinar/<str:id>', webinars.show)
+    path('webinar/<str:id>', webinars.show),
+    path('webinar/remove/<str:id>', webinars.remove)
 ]

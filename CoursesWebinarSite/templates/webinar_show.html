@@ -8,8 +8,36 @@
     <body>
         {{name}} <br>
         Автор: {{author}} <br>
+        Описание: {{description}} <br>
         Дата: {{date}} <br>
-        Ссылка: {{url}} <br>
-        TUDO: ДОБАВИТЬ ФАЙЛЫ И ВЕБИНАРЫ
+        Ссылка: <a href={{url}}>{{url}}</a><br>
+        <br>
+
+        {% if photos|length > 0 %}
+        Фото:
+        </br>
+        {% endif %}
+        {% for url in photos %}
+        <img src={{url}} alt="Изображение">
+        </br>
+        {% endfor %}
+
+        {% if files|length > 0 %}
+        Файлы:
+        </br>
+        {% endif %}
+        {% for index in files %}
+        <a href={{index.1}}>{{index.0}}</a>
+        </br>
+        {% endfor %}
+
+        {% if musics|length > 0 %}
+        Музыка:
+        </br>
+        {% endif %}
+        {% for url in musics %}
+        <a href={{url}}>{{url}}</a>
+        </br>
+        {% endfor %}
     </body>
 </html>

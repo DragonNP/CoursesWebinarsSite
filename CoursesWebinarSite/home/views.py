@@ -1,6 +1,9 @@
-from django.shortcuts import render
 from django.http import HttpResponse
+from django.shortcuts import redirect
 
 
 def index(request):
-    return HttpResponse('Hello World!')
+    if request.user.is_authenticated:
+        return redirect(f'/profile')
+    else:
+        return redirect(f'/login')
