@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="utf-8">
+        <title>Добавление вебинара</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+
+    <body>
+        <form action="/webinar/add" method="post" id="webinar_add">
+            {% csrf_token %}
+
+            <input id="files_count" name="files_count" value="0" type="hidden">
+            <input id="musics_count" name="musics_count" value="0" type="hidden">
+
+            <label for="name">Название</label>
+            <input id="name" type="text" name="name" placeholder="Название вебинара" required>
+            <br>
+            <label for="author">Автор</label>
+            <input id="author" type="text" name="author" placeholder="Автор" required>
+            <br>
+            <label for="date">Дата проведения</label>
+            <input id="date" type="date" name="date" placeholder="Дата" required>
+            <br>
+            <label for="url">Ссылка на вебинар</label>
+            <input id="url" type="url" name="url" placeholder="Ссылка" required>
+            <br>
+            <span id="files"></span>
+            <button type="button" onclick="addFileInput()">Добавить файл</button>
+            <br>
+            <span id="musics"></span>
+            <button type="button" onclick="addMusicInput()">Добавить музыку</button>
+            <br>
+            <input type="submit" value="Добавить вебинар">
+        </form>
+    </body>
+
+    <script>
+        function addFileInput() {
+        var files_count = document.getElementById('files_count');
+        count = parseInt(files_count.getAttribute('value'), 10);
+        files_count.setAttribute('value', count + 1);
+
+        var br = document.createElement("br");
+
+        var file_name_label = document.createElement("label");
+        file_name_label.setAttribute("for", "file_name_"+count);
+        file_name_label.innerHTML = "Введите название файла";
+
+        var file_name = document.createElement("input");
+        file_name.setAttribute("type", "text");
+        file_name.setAttribute("name", "file_name_"+count);
+        file_name.setAttribute("placeholder", "Название");
+        file_name.setAttribute("required", "");
+
+        var file_url_label = document.createElement("label");
+        file_url_label.setAttribute("for", "file_url_"+count);
+        file_url_label.innerHTML = "Введите ссылку на файл";
+
+        var file_url = document.createElement("input");
+        file_url.setAttribute("type", "url");
+        file_url.setAttribute("name", "file_url_"+count);
+        file_url.setAttribute("placeholder", "Ссылка");
+        file_url.setAttribute("required", "");
+
+        document.getElementById("files").appendChild(br)
+        document.getElementById("files").appendChild(file_name_label)
+        document.getElementById("files").appendChild(file_name)
+        document.getElementById("files").appendChild(br)
+        document.getElementById("files").appendChild(file_url_label)
+        document.getElementById("files").appendChild(file_url)
+        document.getElementById("files").appendChild(br)
+    }
+        function addMusicInput() {
+        var musics_count = document.getElementById('musics_count');
+        count = parseInt(musics_count.getAttribute('value'), 10);
+        musics_count.setAttribute('value', count + 1);
+
+        var br = document.createElement("br");
+
+        var url_label = document.createElement("label");
+        url_label.setAttribute("for", "music_url_"+count);
+        url_label.innerHTML = "Введите ссылку на музыку";
+
+        var url = document.createElement("input");
+        url.setAttribute("type", "url");
+        url.setAttribute("name", "music_url_"+count);
+        url.setAttribute("placeholder", "Ссылка");
+        url.setAttribute("required", "");
+
+        document.getElementById("musics").appendChild(br)
+        document.getElementById("musics").appendChild(url_label)
+        document.getElementById("musics").appendChild(url)
+        document.getElementById("musics").appendChild(br)
+    }
+</script>
+</html>
