@@ -5,7 +5,14 @@
 {% block active_webinars %}{% endblock active_webinars %}
 {% block active_courses %}{% endblock active_courses %}
 
-{% block content%}
+
+{% block content %}
+
+<div class="row mb-4">
+    <div class="col-12 text-right">
+        <a class="btn btn-outline-danger" href="/webinar/remove/{{webinar.id}}" role="button">Удалить</a>
+    </div>
+</div>
 
 <div class="row mb-4">
     <div class="col-12">
@@ -16,7 +23,8 @@
                 <h6 class="card-subtitle mb-2 text-muted">Автор: {{webinar.author}}</h6>
 
                 <div class="embed-responsive embed-responsive-16by9">
-                  <iframe class="embed-responsive-item" src="{{webinar.url}}" frameborder="0" allowfullscreen></iframe>
+                    <iframe class="embed-responsive-item" src="{{webinar.url}}" frameborder="0"
+                            allowfullscreen></iframe>
                 </div>
                 <p class="card-text">Ссылка на вебинар: <a href="{{webinar.url}}">{{webinar.url}}</a></p>
             </div>
@@ -24,7 +32,7 @@
     </div>
 </div>
 
-<div class="row">
+<div class="row mb-4">
     <div class="col-md mb-4">
         <div class="card">
             <h5 class="card-header text-center">Файлы</h5>
@@ -86,4 +94,5 @@
         </div>
     </div>
 </div>
+
 {% endblock content %}

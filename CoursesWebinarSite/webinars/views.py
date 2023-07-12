@@ -39,6 +39,7 @@ def show(request, id):
             musics.append([music_model.url, music_model.url[-10:]])
 
         context['webinar'] = {
+            'id': webinar.id,
             'name': webinar.name,
             'author': webinar.author,
             'description': webinar.description,
