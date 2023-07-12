@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Добавить вебинар{% endblock title %}
+
+{% block active_webinars %}{% endblock active_webinars %}
+{% block active_courses %}{% endblock active_courses %}
+
+{% block content%}
+<form class="form-signin" id="webinar_add" action="/webinar/add" method="post">
+    {% csrf_token %}
+    <input id="photos_count" name="photos_count" value="0" type="hidden">
+    <input id="files_count" name="files_count" value="0" type="hidden">
+    <input id="musics_count" name="musics_count" value="0" type="hidden">
+    <div class="form-group">
+        <h1 class="h3 mb-3 font-weight-normal">Новый вебинар</h1>
+    </div>
+    {% if alert != "" %}
+    <div class="form-group">
+        <div class="alert alert-danger" role="alert">
+            {{alert}}
+        </div>
+    </div>
+    {% endif %}
+    {% csrf_token %}
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm">
+                <label class="sr-only" for="name">Название</label>
+                <input class="form-control" id="name" type="text" name="name" placeholder="Название вебинара" required
+                       autofocus>
+            </div>
+
+            <div class="col-sm-5">
+                <label class="sr-only" for="date">Дата проведения</label>
+                <input class="form-control" id="date" type="date" name="date" placeholder="Дата проведения" required>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="sr-only" for="author">Автор</label>
+        <input class="form-control" id="author" type="text" name="author" placeholder="Автор" required>
+    </div>
+    <div class="form-group">
+        <label class="sr-only" for="url">Ссылка на вебинар</label>
+        <input class="form-control" id="url" type="url" name="url" placeholder="Ссылка" required>
+    </div>
+    <div class="form-group">
+        <label class="sr-only" for="description">Описание</label>
+        <textarea class="form-control" id="description" name="description"
+                  placeholder="Добавьте описание к вебинару"></textarea>
+    </div>
+    <div class="form-group">
+        <div class="card">
+            <div class="card-header">Фотографии</div>
+            <div class="card-body">
+                <div id="photos"></div>
+                <button class="btn btn-outline-info" type="button" onclick="addPhoto()">Добавить фото</button>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="card">
+            <div class="card-header">Файлы</div>
+            <div class="card-body">
+                <div id="files"></div>
+                <button class="btn btn-outline-info" type="button" onclick="addFile()">Добавить файл</button>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="card">
+            <div class="card-header">Музыка</div>
+            <div class="card-body">
+                <div id="musics"></div>
+                <button class="btn btn-outline-info" type="button" onclick="addMusic()">Добавить музыку</button>
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Добавить</button>
+</form>>
+{% endblock content%}
+
+{% block custom_sripts %}
+<script src="{% static 'js/webinar_add.js' %}"></script>
+{% endblock custom_sripts %}

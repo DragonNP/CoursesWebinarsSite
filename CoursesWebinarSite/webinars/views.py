@@ -12,10 +12,19 @@ def show(request, id):
         raise Http404('ID должно быть числом')
 
     try:
+        user = request.user
         webinar = Webinar.objects.get(id=id)
 
-        if webinar.user != request.user:
+        if webinar.user != user:
             raise Http404('Это не ваш вебинар!')
+
+        context = {}
+
+        if user.first_name != '':
+            name = user.first_name
+        else:
+            name = user.username
+        context['name'] = name
 
         photos = []
         for photo_model in Photo.objects.filter(webinar=webinar):
@@ -27,74 +36,105 @@ def show(request, id):
 
         musics = []
         for music_model in Music.objects.filter(webinar=webinar):
-            musics.append(music_model.url)
+            musics.append([music_model.url, music_model.url[-10:]])
 
-        context = {
+        context['webinar'] = {
             'name': webinar.name,
             'author': webinar.author,
             'description': webinar.description,
-            'date': webinar.date,
+            'date': webinar.format_date(),
             'url': webinar.url,
             'photos': photos,
             'files': files,
             'musics': musics,
         }
 
-        return render(request, 'webinar_show.html', context=context)
+        return render(request, 'webinar/show.html', context=context)
     except ObjectDoesNotExist as e:
         raise Http404('ID в базе данных не найдено')
 
 
 @login_required(login_url="/login")
-def add(request):
-    if request.method == "GET":
-        return render(request, 'webinar_add.html')
+def my(request):
+    user = request.user
+    context = {}
+
+    if user.first_name != '':
+        name = user.first_name
     else:
-        return post_add(request)
+        name = user.username
+    context['name'] = name
+
+    mass = []
+    for webinar in Webinar.objects.filter(user=user):
+        web = [webinar.id, webinar.name]
+
+        if webinar.description != '':
+            web.append(webinar.description)
+        else:
+            web.append('')
+        web.append(webinar.format_date(is_month_name=False))
+        mass.append(web)
+
+    context['webinars'] = mass
+    return render(request, 'webinar/my.html', context=context)
 
 
 @login_required(login_url="/login")
-def post_add(request):
-    if request.method != "POST":
-        raise Http404('Error')
-    response = request.POST
+def add(request):
+    if request.method == "GET":
+        return render(request, 'webinar/add.html', context={'alert': ''})
+    else:
+        if request.method != "POST":
+            raise Http404('Error')
+        response = request.POST
 
-    print(response)
+        name = response['name']
+        author = response['author']
+        description = response['description']
+        date = response['date']
+        url = str(response['url'])
 
-    name = response['name']
-    author = response['author']
-    description = response['description']
-    date = response['date']
-    url = response['url']
+        if url.startswith('https://www.youtube.com/watch'):
+            for code in url.split('?')[1].split('&'):
+                if code[0:2] == 'v=':
+                    url = 'https://www.youtube.com/embed/' + code[2:]
+                    break
+        elif url.startswith('https://www.youtube.com/embed'):
+            url = url.split('?')[0]
+        else:
+            return render(request, 'webinar/add.html',
+                          context={'alert': 'Ссылка на вебинар должен вести на сайт youtube.com'})
+        print(url)
 
-    webinar = Webinar.objects.create(name=name, author=author, date=date, url=url, user=request.user,
-                                     description=description)
+        webinar = Webinar.objects.create(name=name, author=author, date=date, url=url, user=request.user,
+                                         description=description)
 
-    photos = []
-    files = {}
-    musics = []
-    for key in response.keys():
-        if 'photo_url_' in key:
-            photos.append(response[key])
-        elif 'file_name_' in key:
-            id = key.replace('file_name_', '')
-            files[id] = [response[f'file_name_{id}'], response[f'file_url_{id}']]
-        elif 'music_url_' in key:
-            musics.append(response[key])
+        photos = []
+        files = {}
+        musics = []
+        for key in response.keys():
+            if 'photo_' in key:
+                photos.append(response[key])
+            elif 'file_name_' in key:
+                id = key.replace('file_name_', '')
+                files[id] = [response[f'file_name_{id}'], response[f'file_url_{id}']]
+            elif 'music_' in key:
+                musics.append(response[key])
 
-    for url in photos:
-        Photo.objects.create(url=url, webinar=webinar)
+        for url in photos:
+            Photo.objects.create(url=url, webinar=webinar)
 
-    for id in files:
-        name = files[id][0]
-        url = files[id][1]
+        for id in files:
+            name = files[id][0]
+            url = files[id][1]
 
-        File.objects.create(name=name, url=url, webinar=webinar)
+            File.objects.create(name=name, url=url, webinar=webinar)
 
-    for url in musics:
-        Music.objects.create(url=url, webinar=webinar)
+        for url in musics:
+            Music.objects.create(url=url, webinar=webinar)
 
-    return redirect(f'/webinar/{webinar.id}')
+        return redirect(f'/webinar/{webinar.id}')
 
 
 @login_required(login_url="/login")

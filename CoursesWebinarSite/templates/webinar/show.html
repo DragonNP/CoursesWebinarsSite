@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}{{webinar.name}}{% endblock title %}
+
+{% block active_webinars %}{% endblock active_webinars %}
+{% block active_courses %}{% endblock active_courses %}
+
+{% block content%}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title text-center">{{webinar.name}}</h1>
+                <h6 class="card-subtitle mb-2 text-muted">Дата проведения: {{webinar.date}}</h6>
+                <h6 class="card-subtitle mb-2 text-muted">Автор: {{webinar.author}}</h6>
+
+                <div class="embed-responsive embed-responsive-16by9">
+                  <iframe class="embed-responsive-item" src="{{webinar.url}}" frameborder="0" allowfullscreen></iframe>
+                </div>
+                <p class="card-text">Ссылка на вебинар: <a href="{{webinar.url}}">{{webinar.url}}</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md mb-4">
+        <div class="card">
+            <h5 class="card-header text-center">Файлы</h5>
+            <div class="card-body">
+                {% for name, url in webinar.files %}
+                <a href="{{url}}" type="button" class="btn btn-outline-primary mb-1">{{name}}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md mb-4">
+        <div class="card">
+            <h5 class="card-header text-center">Музыка</h5>
+            <div class="card-body">
+                {% for url, short_name in webinar.musics %}
+                <a href="{{url}}" type="button" class="btn btn-outline-primary mb-1">{{short_name}}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md mb-4">
+        <div class="card">
+            <h5 class="card-header text-center">Фотографии</h5>
+            <div class="card-body">
+                <div id="photo_carousel" class="carousel slide" data-ride="carousel">
+                    <ol class="carousel-indicators">
+                        {% for url in webinar.photos %}
+                        {% if forloop.counter == 1 %}
+                        <li data-target="#photo_carousel" data-slide-to="{{forloop.counter0}}" class="active"></li>
+                        {% else %}
+                        <li data-target="#photo_carousel" data-slide-to="{{forloop.counter0}}"></li>
+                        {% endif %}
+                        {% endfor %}
+                    </ol>
+                    <div class="carousel-inner">
+                        {% for url in webinar.photos %}
+                        {% if forloop.counter == 1 %}
+                        <div class="carousel-item active">
+                            {% else %}
+                            <div class="carousel-item">
+                                {% endif %}
+                                <img class="d-block w-100" style="width:50%;" src="{{url}}"
+                                     alt="{{forloop.counter}} фото">
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <a class="carousel-control-prev" href="#photo_carousel" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Предыдущее</span>
+                        </a>
+                        <a class="carousel-control-next" href="#photo_carousel" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Следующее</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

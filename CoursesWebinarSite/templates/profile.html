@@ -1,26 +1,44 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Профиль</title>
-</head>
-<body>
-    Привет! {{name}} <a href="/logout">
-        <button>Выйти из акаунта</button>
-    </a>
-    </br>
-    </br>
-    Твои вебинары:
-    </br>
-    {% for id, name in webinars.items %}
-    <a href="/webinar/{{id}}">{{name}}</a>
-    <a href="/webinar/remove/{{id}}"><button type="button">x</button></a>
-    </br>
-    {% endfor %}
+{% extends "base.html" %}
 
-    <a href="/webinar/add">
-        <button>Добавить вебинар</button>
-    </a>
-</body>
+{% block title %}Профиль{% endblock title %}
 
-</html>
+{% block content %}
+<section style="background-color: #eee;">
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-lg-4">
+        <div class="card mb-4">
+          <div class="card-body text-center">
+            <img src="https://media.istockphoto.com/id/1131164548/vector/avatar-5.jpg?s=612x612&w=0&k=20&c=CK49ShLJwDxE4kiroCR42kimTuuhvuo2FH5y_6aSgEo=" alt="avatar"
+              class="rounded-circle img-fluid" style="width: 150px;">
+            <h5 class="my-3">{{username}}</h5>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="card mb-4">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-3">
+                <p class="mb-0">Имя и фамилия</p>
+              </div>
+              <div class="col-sm-9">
+                <p class="text-muted mb-0">{{full_name}}</p>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-sm-3">
+                <p class="mb-0">Электронная почта</p>
+              </div>
+              <div class="col-sm-9">
+                <p class="text-muted mb-0">{{email}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock content %}

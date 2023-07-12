@@ -1,0 +1,50 @@
+{% extends "authorization/base.html" %}
+
+{% block title %}Регистрация{% endblock title %}
+{% block active_login %}{% endblock active_login %}
+{% block active_registration %}active{% endblock active_registration %}
+
+{% block form %}
+<form class="form-signin" action="/signup" method="post">
+    <div class="form-group">
+        <h1 class="h3 mb-3 font-weight-normal">Регистрация нового пользователя</h1>
+    </div>
+    {% if alert != "" %}
+    <div class="form-group">
+        <div class="alert alert-danger" role="alert">
+            {{alert}}
+        </div>
+    </div>
+    {% endif %}
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="username" class="sr-only">Имя пользователя</label>
+        <input class="form-control" id="username" type="text" name="username" placeholder="Имя пользователя" required autofocus>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col">
+                <label for="firstname" class="sr-only">Имя</label>
+                <input class="form-control" id="firstname" type="text" name="firstname" placeholder="Имя" >
+            </div>
+            <div class="col">
+                <label for="lastname" class="sr-only">Фамилия</label>
+                <input class="form-control" id="lastname" type="text" name="lastname" placeholder="Фамилия" >
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="email" class="sr-only">Электронная почта</label>
+        <input class="form-control" id="email" type="text" name="email" placeholder="Электронная почта" >
+    </div>
+    <div class="form-group">
+        <label class="sr-only" for="password">Пароль*</label>
+        <input class="form-control" id="password" type="password" name="password" placeholder="Пароль" required>
+    </div>
+    <div class="form-group">
+        Уже зарегистрированны?
+        <a href="/login" role="button">Войти</a>
+    </div>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Зарегистрироваться</button>
+</form>
+{% endblock form %}

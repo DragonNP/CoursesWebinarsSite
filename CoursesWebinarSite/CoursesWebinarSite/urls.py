@@ -27,6 +27,7 @@ urlpatterns = [
     path('login', user.login_page),
     path('signup', user.signup),
     path('logout', user.logout_user),
+    path('webinars', webinars.my),
     path('webinar/add', webinars.add),
     path('webinar/<str:id>', webinars.show),
     path('webinar/remove/<str:id>', webinars.remove)
