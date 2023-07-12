@@ -14,12 +14,20 @@
 <div class="row">
   {% for web in webinars %}
   <div class="col-md-4 mb-4">
-    <div class="card">
+    {% if web.4 == True %}
+    <div class="card border-success">
+    {% else %}
+    <div class="card border-danger">
+    {% endif %}
       <div class="card-body">
         <h4 class="card-title">{{web.1}}</h4>
         <h6 class="card-subtitle mb-2 text-muted">{{web.3}}</h6>
         <p class="card-text">{{web.2}}</p>
-        <a href="/webinar/{{web.0}}" class="btn btn-outline-info">Перейти</a>
+    {% if web.4 == True %}
+        <a href="/webinar/{{web.0}}" class="btn btn-outline-success">Перейти</a>
+    {% else %}
+        <a href="/webinar/{{web.0}}" class="btn btn-danger">Перейти</a>
+    {% endif %}
       </div>
     </div>
   </div>

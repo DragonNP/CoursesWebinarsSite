@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.http import Http404
+from watched.models import WatchedWebinar
 from webinars.models import Webinar, File, Music, Photo
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
@@ -38,6 +39,14 @@ def show(request, id):
         for music_model in Music.objects.filter(webinar=webinar):
             musics.append([music_model.url, music_model.url[-10:]])
 
+        webinar_watched = False
+        try:
+            WatchedWebinar.objects.get(user=user, webinar=webinar)
+            webinar_watched = True
+        except Exception as e:
+            if str(e) == 'WatchedWebinar matching query does not exist.':
+                webinar_watched = False
+
         context['webinar'] = {
             'id': webinar.id,
             'name': webinar.name,
@@ -48,6 +57,7 @@ def show(request, id):
             'photos': photos,
             'files': files,
             'musics': musics,
+            'watched': webinar_watched
         }
 
         return render(request, 'webinar/show.html', context=context)
@@ -74,7 +84,16 @@ def my(request):
             web.append(webinar.description)
         else:
             web.append('')
+
         web.append(webinar.format_date(is_month_name=False))
+
+        try:
+            WatchedWebinar.objects.get(user=user, webinar=webinar)
+            web.append(True)
+        except Exception as e:
+            if str(e) == 'WatchedWebinar matching query does not exist.':
+                web.append(False)
+
         mass.append(web)
 
     context['webinars'] = mass
@@ -136,6 +155,24 @@ def add(request):
             Music.objects.create(url=url, webinar=webinar)
 
         return redirect(f'/webinar/{webinar.id}')
+
+
+@login_required(login_url="/login")
+def make_watched(request, id):
+    web = Webinar.objects.get(id=id)
+    user = request.user
+
+    WatchedWebinar.objects.create(user=user, webinar=web)
+    return redirect(f'/webinar/{id}')
+
+
+@login_required(login_url="/login")
+def make_no_watched(request, id):
+    web = Webinar.objects.get(id=id)
+    user = request.user
+
+    WatchedWebinar.objects.get(user=user, webinar=web).delete()
+    return redirect(f'/webinar/{id}')
 
 
 @login_required(login_url="/login")
