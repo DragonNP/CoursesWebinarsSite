@@ -57,9 +57,6 @@ def logout_user(request):
 @login_required(login_url="/login")
 def profile(request):
     user = request.user
-    user_webinars = {}
-    for webinar in Webinar.objects.filter(user=user):
-        user_webinars[webinar.id] = webinar.name
 
     if user.first_name != '':
         name = user.first_name

@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from home import views as home
 from webinars import views as webinars
-from user import views as user
+from users import views as user
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,5 +30,7 @@ urlpatterns = [
     path('webinars', webinars.my),
     path('webinar/add', webinars.add),
     path('webinar/<str:id>', webinars.show),
-    path('webinar/remove/<str:id>', webinars.remove)
+    path('webinar/remove/<str:id>', webinars.remove),
+    path('webinar/watched/<str:id>', webinars.make_watched),
+    path('webinar/no_watched/<str:id>', webinars.make_no_watched)
 ]

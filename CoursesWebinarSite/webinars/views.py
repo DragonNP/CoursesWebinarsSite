@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.http import Http404
-from watched.models import WatchedWebinar
+from users.models import Webinars as UsersWebinars
 from webinars.models import Webinar, File, Music, Photo
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
@@ -15,9 +15,6 @@ def show(request, id):
     try:
         user = request.user
         webinar = Webinar.objects.get(id=id)
-
-        if webinar.user != user:
-            raise Http404('Это не ваш вебинар!')
 
         context = {}
 
@@ -39,13 +36,7 @@ def show(request, id):
         for music_model in Music.objects.filter(webinar=webinar):
             musics.append([music_model.url, music_model.url[-10:]])
 
-        webinar_watched = False
-        try:
-            WatchedWebinar.objects.get(user=user, webinar=webinar)
-            webinar_watched = True
-        except Exception as e:
-            if str(e) == 'WatchedWebinar matching query does not exist.':
-                webinar_watched = False
+        webinar_watched = UsersWebinars.objects.filter(user=user, webinar=webinar)[0].is_watched
 
         context['webinar'] = {
             'id': webinar.id,
@@ -62,7 +53,7 @@ def show(request, id):
 
         return render(request, 'webinar/show.html', context=context)
     except ObjectDoesNotExist as e:
-        raise Http404('ID в базе данных не найдено')
+        return redirect('/webinars')
 
 
 @login_required(login_url="/login")
@@ -77,7 +68,9 @@ def my(request):
     context['name'] = name
 
     mass = []
-    for webinar in Webinar.objects.filter(user=user):
+    for user_webinar in UsersWebinars.objects.filter(user=user):
+        webinar = user_webinar.webinar
+
         web = [webinar.id, webinar.name]
 
         if webinar.description != '':
@@ -86,13 +79,7 @@ def my(request):
             web.append('')
 
         web.append(webinar.format_date(is_month_name=False))
-
-        try:
-            WatchedWebinar.objects.get(user=user, webinar=webinar)
-            web.append(True)
-        except Exception as e:
-            if str(e) == 'WatchedWebinar matching query does not exist.':
-                web.append(False)
+        web.append(user_webinar.is_watched)
 
         mass.append(web)
 
@@ -125,10 +112,10 @@ def add(request):
         else:
             return render(request, 'webinar/add.html',
                           context={'alert': 'Ссылка на вебинар должен вести на сайт youtube.com'})
-        print(url)
 
-        webinar = Webinar.objects.create(name=name, author=author, date=date, url=url, user=request.user,
+        webinar = Webinar.objects.create(name=name, author=author, date=date, url=url,
                                          description=description)
+        UsersWebinars.objects.create(user=request.user, webinar=webinar, is_watched=False)
 
         photos = []
         files = {}
@@ -162,7 +149,10 @@ def make_watched(request, id):
     web = Webinar.objects.get(id=id)
     user = request.user
 
-    WatchedWebinar.objects.create(user=user, webinar=web)
+    user_webinar = UsersWebinars.objects.get(user=user, webinar=web)
+    user_webinar.is_watched = True
+    user_webinar.save()
+
     return redirect(f'/webinar/{id}')
 
 
@@ -171,7 +161,10 @@ def make_no_watched(request, id):
     web = Webinar.objects.get(id=id)
     user = request.user
 
-    WatchedWebinar.objects.get(user=user, webinar=web).delete()
+    user_webinar = UsersWebinars.objects.get(user=user, webinar=web)
+    user_webinar.is_watched = False
+    user_webinar.save()
+
     return redirect(f'/webinar/{id}')
 
 

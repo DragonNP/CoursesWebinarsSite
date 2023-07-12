@@ -10,13 +10,22 @@
 
 <div class="row mb-4">
     <div class="col-12 text-right">
+    {% if webinar.watched == True %}
+        <a class="btn btn-outline-danger" href="/webinar/no_watched/{{webinar.id}}" role="button">Отметить как непросмотренное</a>
+    {% else %}
+        <a class="btn btn-success" href="/webinar/watched/{{webinar.id}}" role="button">Отметить как просмотренное</a>
+    {% endif %}
         <a class="btn btn-outline-danger" href="/webinar/remove/{{webinar.id}}" role="button">Удалить</a>
     </div>
 </div>
 
 <div class="row mb-4">
     <div class="col-12">
-        <div class="card">
+    {% if webinar.watched == True %}
+        <div class="card border-success">
+    {% else %}
+        <div class="card border-danger">
+    {% endif %}
             <div class="card-body">
                 <h1 class="card-title text-center">{{webinar.name}}</h1>
                 <h6 class="card-subtitle mb-2 text-muted">Дата проведения: {{webinar.date}}</h6>
