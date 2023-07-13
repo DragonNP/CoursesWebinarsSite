@@ -1,0 +1,13 @@
+{% extends "registration/base.html" %}
+
+{% block active_login %}{% endblock active_login %}
+{% block active_registration %}{% endblock active_registration %}
+
+{% block form %}
+<div class="alert alert-success" role="alert">
+  <h4 class="alert-heading">Успешно!</h4>
+  <p>Вы вышли из системы.</p>
+  <hr>
+  <a class="btn btn-lg btn-primary btn-block mb-0" href="{% url 'login' %}">Заново войти</a>
+</div>
+{% endblock form %}

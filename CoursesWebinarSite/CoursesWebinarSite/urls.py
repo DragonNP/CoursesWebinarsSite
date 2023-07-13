@@ -15,7 +15,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+
+from courses import views as courses
 from home import views as home
 from webinars import views as webinars
 from users import views as user
@@ -23,14 +25,37 @@ from users import views as user
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home.index),
-    path('profile', user.profile),
-    path('login', user.login_page),
-    path('signup', user.signup),
-    path('logout', user.logout_user),
-    path('webinars', webinars.my),
-    path('webinar/add', webinars.add),
-    path('webinar/<str:id>', webinars.show),
-    path('webinar/remove/<str:id>', webinars.remove),
-    path('webinar/watched/<str:id>', webinars.make_watched),
-    path('webinar/no_watched/<str:id>', webinars.make_no_watched)
 ]
+
+# URL для курсов
+urlpatterns += [
+    path('courses/my', courses.empty, name='my_courses')
+]
+
+# URL для вебинаров
+urlpatterns += [
+    path('webinars/', webinars.all_webinars, name='webinars'),
+    path('webinars/my/', webinars.my, name='my_webinars'),
+    path('webinars/add/', webinars.add, name='add_webinar'),
+    path('webinars/<str:id>/', webinars.show, name='show_webinar'),
+    path('webinars/<str:id>/remove/', webinars.remove, name='remove_webinar'),
+    path('webinars/<str:id>/make/watched/', webinars.make_watched, name='make_watched_webinar'),
+    path('webinars/<str:id>/make/no_watched/', webinars.make_no_watched, name='make_no_watched_webinar')
+]
+
+# URL для аккаунта
+urlpatterns += [
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/profile/', user.profile, name='my_profile'),
+    path('accounts/registration/', user.registration, name='registration')
+]
+"""
+accounts/ login/ [name='login']
+accounts/ logout/ [name='logout']
+accounts/ password_change/ [name='password_change']
+accounts/ password_change/done/ [name='password_change_done']
+accounts/ password_reset/ [name='password_reset']
+accounts/ password_reset/done/ [name='password_reset_done']
+accounts/ reset/<uidb64>/<token>/ [name='password_reset_confirm']
+accounts/ reset/done/ [name='password_reset_complete']
+"""

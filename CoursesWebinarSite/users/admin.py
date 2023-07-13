@@ -1,6 +1,6 @@
 from django.contrib import admin
-from users.models import Webinars, Courses, Lessons
+from users.models import UserWebinarLink, UserCourseLink, UserLessonLink
 
-admin.site.register(Webinars)
-admin.site.register(Courses)
-admin.site.register(Lessons)
+admin.site.register(UserWebinarLink)
+admin.site.register(UserCourseLink)
+admin.site.register(UserLessonLink)

@@ -8,7 +8,7 @@
 {% block content%}
 <div class="row">
   <div class="col mb-4 text-right">
-    <a class="btn btn-primary" href="/webinar/add" role="button">Добавить новый вебинар</a>
+    <a class="btn btn-primary" href="{% url 'add_webinar' %}" role="button">Добавить новый вебинар</a>
   </div>
 </div>
 <div class="row">
@@ -24,9 +24,9 @@
         <h6 class="card-subtitle mb-2 text-muted">{{web.3}}</h6>
         <p class="card-text">{{web.2}}</p>
     {% if web.4 == True %}
-        <a href="/webinar/{{web.0}}" class="btn btn-outline-success">Перейти</a>
+        <a href="/webinars/{{web.0}}/" class="btn btn-outline-success">Перейти</a>
     {% else %}
-        <a href="/webinar/{{web.0}}" class="btn btn-danger">Перейти</a>
+        <a href="/webinars/{{web.0}}/" class="btn btn-danger">Перейти</a>
     {% endif %}
       </div>
     </div>

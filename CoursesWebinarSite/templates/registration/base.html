@@ -2,10 +2,10 @@
 
 {% block navbars %}
 <li class="nav-item {% block active_login%}{% endblock active_login %}">
-    <a class="nav-link" href="/login">Авторизация<span class="sr-only"></span></a>
+    <a class="nav-link" href="{% url 'login' %}">Авторизация<span class="sr-only"></span></a>
 </li>
 <li class="nav-item {% block active_registration%}{% endblock active_registration %}">
-    <a class="nav-link" href="/signup">Регистрация</a>
+    <a class="nav-link" href="{% url 'registration' %}">Регистрация</a>
 </li>
 {% endblock navbars %}
 

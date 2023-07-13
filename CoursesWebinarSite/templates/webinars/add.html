@@ -7,7 +7,7 @@
 {% block active_courses %}{% endblock active_courses %}
 
 {% block content%}
-<form class="form-signin" id="webinar_add" action="/webinar/add" method="post">
+<form class="form-signin" id="webinar_add" action="{% url 'add_webinar' %}" method="post">
     {% csrf_token %}
     <input id="photos_count" name="photos_count" value="0" type="hidden">
     <input id="files_count" name="files_count" value="0" type="hidden">
@@ -39,7 +39,7 @@
     </div>
     <div class="form-group">
         <label class="sr-only" for="author">Автор</label>
-        <input class="form-control" id="author" type="text" name="author" placeholder="Автор" required>
+        <input class="form-control" id="author" type="text" name="author" placeholder="Автор">
     </div>
     <div class="form-group">
         <label class="sr-only" for="url">Ссылка на вебинар</label>
