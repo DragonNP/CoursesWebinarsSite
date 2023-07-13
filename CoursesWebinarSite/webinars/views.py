@@ -17,12 +17,6 @@ def my(request):
     user = request.user
     context = {}
 
-    if user.first_name != '':
-        name = user.first_name
-    else:
-        name = user.username
-    context['name'] = name
-
     mass = []
     for user_webinar in UserWebinarLink.objects.filter(user=user, is_my=True):
         webinar = user_webinar.webinar
@@ -120,7 +114,6 @@ def show(request, id):
         return redirect('/')
 
     user = request.user
-
     context = {}
 
     if user.first_name != '':
