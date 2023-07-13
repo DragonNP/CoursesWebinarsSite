@@ -5,16 +5,17 @@ function addPhoto() {
 
     var div_row = document.createElement("div");
     div_row.setAttribute("id", "photo_"+count);
-    div_row.setAttribute("class", "row mb-4");
+    div_row.setAttribute("class", "row mb-3");
 
     var div_col = document.createElement("div");
     div_col.setAttribute("class", "input-group col");
 
     var input = document.createElement("input");
     input.setAttribute("class", "form-control");
-    input.setAttribute("type", "url");
+    input.setAttribute("type", "text");
+    input.setAttribute("pattern", "(https?:\\/\\/)?(?:(?:[a-zA-Z\\u00a1-\\uffff0-9]+-?)*[a-zA-Z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-zA-Z\\u00a1-\\uffff0-9]+-?)*[a-zA-Z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-zA-Z\\u00a1-\\uffff]{2,}))(?::\\d{2,5})?(?:\\/[^\\s]*)?");
     input.setAttribute("name", "photo_"+count);
-    input.setAttribute("placeholder", "Ссылка на фотографию");
+    input.setAttribute("placeholder", "Ссылка");
     input.setAttribute("required", "");
 
     var div_btn = document.createElement("div");
@@ -44,7 +45,7 @@ function addFile() {
 
     var div_row = document.createElement("div");
     div_row.setAttribute("id", "file_"+count);
-    div_row.setAttribute("class", "row mb-4");
+    div_row.setAttribute("class", "row mb-3");
 
     var div_col = document.createElement("div");
     div_col.setAttribute("class", "input-group col");
@@ -53,14 +54,15 @@ function addFile() {
     input_name.setAttribute("class", "form-control col");
     input_name.setAttribute("type", "text");
     input_name.setAttribute("name", "file_name_"+count);
-    input_name.setAttribute("placeholder", "Название файла");
+    input_name.setAttribute("placeholder", "Название");
     input_name.setAttribute("required", "");
 
     var input_url = document.createElement("input");
     input_url.setAttribute("class", "form-control col-5");
-    input_url.setAttribute("type", "url");
+    input_url.setAttribute("type", "text");
+    input_url.setAttribute("pattern", "(https?:\\/\\/)?(?:(?:[a-zA-Z\\u00a1-\\uffff0-9]+-?)*[a-zA-Z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-zA-Z\\u00a1-\\uffff0-9]+-?)*[a-zA-Z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-zA-Z\\u00a1-\\uffff]{2,}))(?::\\d{2,5})?(?:\\/[^\\s]*)?");
     input_url.setAttribute("name", "file_url_"+count);
-    input_url.setAttribute("placeholder", "Ссылка на файл");
+    input_url.setAttribute("placeholder", "Ссылка");
     input_url.setAttribute("required", "");
 
     var div_btn = document.createElement("div");
@@ -90,16 +92,17 @@ function addMusic() {
 
     var div_row = document.createElement("div");
     div_row.setAttribute("id", "music_"+count);
-    div_row.setAttribute("class", "row mb-4");
+    div_row.setAttribute("class", "row mb-3");
 
     var div_col = document.createElement("div");
     div_col.setAttribute("class", "input-group col");
 
     var input = document.createElement("input");
     input.setAttribute("class", "form-control");
-    input.setAttribute("type", "url");
+    input.setAttribute("type", "text");
+    input.setAttribute("pattern", "(https?:\\/\\/)?(?:(?:[a-zA-Z\\u00a1-\\uffff0-9]+-?)*[a-zA-Z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-zA-Z\\u00a1-\\uffff0-9]+-?)*[a-zA-Z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-zA-Z\\u00a1-\\uffff]{2,}))(?::\\d{2,5})?(?:\\/[^\\s]*)?");
     input.setAttribute("name", "music_"+count);
-    input.setAttribute("placeholder", "Ссылка на музыку");
+    input.setAttribute("placeholder", "Ссылка");
     input.setAttribute("required", "");
 
     var div_btn = document.createElement("div");

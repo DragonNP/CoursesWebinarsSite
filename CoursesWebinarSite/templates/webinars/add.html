@@ -7,7 +7,7 @@
 {% block active_courses %}{% endblock active_courses %}
 
 {% block content%}
-<form class="form-signin" id="webinar_add" action="{% url 'add_webinar' %}" method="post">
+<form class="form-signin needs-validation" id="webinar_add" action="{% url 'add_webinar' %}" method="post" novalidate>
     {% csrf_token %}
     <input id="photos_count" name="photos_count" value="0" type="hidden">
     <input id="files_count" name="files_count" value="0" type="hidden">
@@ -25,13 +25,13 @@
     {% csrf_token %}
     <div class="form-group">
         <div class="row">
-            <div class="col-sm">
+            <div class="col-md-7 mt-3">
                 <label class="sr-only" for="name">Название</label>
                 <input class="form-control" id="name" type="text" name="name" placeholder="Название вебинара" required
                        autofocus>
             </div>
 
-            <div class="col-sm-5">
+            <div class="col-md-5 mt-3">
                 <label class="sr-only" for="date">Дата проведения</label>
                 <input class="form-control" id="date" type="date" name="date" placeholder="Дата проведения" required>
             </div>
@@ -43,7 +43,10 @@
     </div>
     <div class="form-group">
         <label class="sr-only" for="url">Ссылка на вебинар</label>
-        <input class="form-control" id="url" type="url" name="url" placeholder="Ссылка" required>
+        <input class="form-control" id="url" type="text" name="url" placeholder="Ссылка" pattern="(https?:\/\/)?(?:(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))(?::\d{2,5})?(?:\/[^\s]*)?" required>
+        <div class="invalid-feedback">
+            Укажите корректную ссылку
+        </div>
     </div>
     <div class="form-group">
         <label class="sr-only" for="description">Описание</label>
@@ -82,5 +85,27 @@
 {% endblock content%}
 
 {% block custom_sripts %}
+<script>
+(function () {
+  'use strict'
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  var forms = document.querySelectorAll('.needs-validation')
+
+  // Loop over them and prevent submission
+  Array.prototype.slice.call(forms)
+    .forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+
+        form.classList.add('was-validated')
+      }, false)
+    })
+})()
+</script>
+
 <script src="{% static 'js/webinar_add.js' %}"></script>
 {% endblock custom_sripts %}
