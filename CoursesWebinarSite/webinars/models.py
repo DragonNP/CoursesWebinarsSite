@@ -11,7 +11,7 @@ class Author(models.Model):
 class Webinar(models.Model):
     name = models.CharField(max_length=150, blank=False)
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
-    description = models.CharField(max_length=250, blank=True)
+    description = models.CharField(max_length=1000, blank=True)
     date = models.DateField(blank=False)
     url = models.URLField(max_length=150, blank=False)
 
