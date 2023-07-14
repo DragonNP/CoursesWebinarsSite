@@ -4,7 +4,7 @@ from django.http import Http404
 from django.shortcuts import redirect
 
 from users.models import UserWebinarLink
-from webinars.models import Webinar, File, Music, Photo
+from webinars.models import Webinar, File, Music, Photo, Author
 
 
 @login_required
@@ -48,7 +48,7 @@ def add(request):
     response = request.POST
 
     name = response['name']
-    author = response['author']
+    author_name = response['author']
     description = response['description']
     date = response['date']
     url = str(response['url'])
@@ -60,6 +60,10 @@ def add(request):
                 break
     elif url.startswith('https://www.youtube.com/embed'):
         url = url.split('?')[0]
+
+    author = Author.objects.filter(name=author_name).first()
+    if author is None:
+        author = Author.objects.create(name=author_name)
 
     webinar = Webinar.objects.create(name=name, author=author, date=date, url=url,
                                      description=description)
@@ -98,7 +102,6 @@ def show(request, id):
         raise Http404('ID должно быть числом')
 
     webinar = Webinar.objects.filter(id=id).first()
-
     if webinar is None:
         return redirect('/')
 
@@ -130,7 +133,7 @@ def show(request, id):
     context['webinar'] = {
         'id': webinar.id,
         'name': webinar.name,
-        'author': webinar.author,
+        'author': webinar.author.name,
         'description': webinar.description,
         'date': webinar.format_date(),
         'url': webinar.url,
@@ -181,5 +184,4 @@ def remove(request, id):
 
     if user_webinar_link.is_my:
         current_webinar.delete()
-        current_webinar.save()
     return redirect('/')
