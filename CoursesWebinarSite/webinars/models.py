@@ -4,6 +4,9 @@ from django.db import models
 class Author(models.Model):
     name = models.CharField(max_length=150, blank=False, unique=True)
 
+    def __str__(self):
+        return self.name
+
 
 class Webinar(models.Model):
     name = models.CharField(max_length=150, blank=False)
@@ -35,17 +38,49 @@ class Webinar(models.Model):
         return f'{day}.{m}.{year}'
 
 
-class Photo(models.Model):
-    url = models.URLField(max_length=300, blank=False)
-    webinar = models.ForeignKey(Webinar, on_delete=models.CASCADE)
+class MaterialType:
+    FILE = "FILE"
+    PHOTO = "PHOTO"
+    MUSIC = "MUSIC"
+
+    CHOICES = (
+        (FILE, "file"),
+        (PHOTO, "photo"),
+        (MUSIC, "music")
+    )
 
 
-class File(models.Model):
+class Material(models.Model):
     name = models.CharField(max_length=150, blank=False)
     url = models.URLField(max_length=300, blank=False)
     webinar = models.ForeignKey(Webinar, on_delete=models.CASCADE)
 
+    type = models.CharField(max_length=5, choices=MaterialType.CHOICES)
 
-class Music(models.Model):
-    url = models.URLField(max_length=300, blank=False)
-    webinar = models.ForeignKey(Webinar, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.url
+
+
+# class Photo(models.Model):
+#     url = models.URLField(max_length=300, blank=False)
+#     webinar = models.ForeignKey(Webinar, on_delete=models.CASCADE)
+#
+#     def __str__(self):
+#         return self.url
+#
+#
+# class File(models.Model):
+#     name = models.CharField(max_length=150, blank=False)
+#     url = models.URLField(max_length=300, blank=False)
+#     webinar = models.ForeignKey(Webinar, on_delete=models.CASCADE)
+#
+#     def __str__(self):
+#         return self.name
+#
+#
+# class Music(models.Model):
+#     url = models.URLField(max_length=300, blank=False)
+#     webinar = models.ForeignKey(Webinar, on_delete=models.CASCADE)
+#
+#     def __str__(self):
+#         return self.url

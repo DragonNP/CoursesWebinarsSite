@@ -4,7 +4,7 @@ from django.http import Http404
 from django.shortcuts import redirect
 
 from users.models import UserWebinarLink
-from webinars.models import Webinar, File, Music, Photo, Author
+from webinars.models import Webinar, Author, Material, MaterialType
 
 
 @login_required
@@ -82,16 +82,25 @@ def add(request):
             musics.append(response[key])
 
     for url in photos:
-        Photo.objects.create(url=url, webinar=webinar)
+        Material.objects.create(name=url[-10:],
+                                url=url,
+                                webinar=webinar,
+                                type=MaterialType.PHOTO)
 
     for id in files:
         name = files[id][0]
         url = files[id][1]
 
-        File.objects.create(name=name, url=url, webinar=webinar)
+        Material.objects.create(name=name,
+                                url=url,
+                                webinar=webinar,
+                                type=MaterialType.FILE)
 
     for url in musics:
-        Music.objects.create(url=url, webinar=webinar)
+        Material.objects.create(name=url[-10:],
+                                url=url,
+                                webinar=webinar,
+                                type=MaterialType.MUSIC)
 
     return redirect(f'/webinars/{webinar.id}')
 
@@ -115,16 +124,16 @@ def show(request, id):
     context['name'] = name
 
     photos = []
-    for photo_model in Photo.objects.filter(webinar=webinar):
-        photos.append(photo_model.url)
-
     files = []
-    for file_model in File.objects.filter(webinar=webinar):
-        files.append([file_model.name, file_model.url])
-
     musics = []
-    for music_model in Music.objects.filter(webinar=webinar):
-        musics.append([music_model.url, music_model.url[-10:]])
+
+    for material in Material.objects.filter(webinar=webinar):
+        if material.type == MaterialType.PHOTO:
+            photos.append(material.url)
+        elif material.type == MaterialType.FILE:
+            files.append([material.name, material.url])
+        elif material.type == MaterialType.MUSIC:
+            musics.append([material.url, material.url[-10:]])
 
     user_webinar_link = UserWebinarLink.objects.filter(user=user, webinar=webinar).first()
     if user_webinar_link is None:
