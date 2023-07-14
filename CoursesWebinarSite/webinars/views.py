@@ -18,8 +18,8 @@ def my(request):
     context = {}
 
     mass = []
-    for user_webinar in UserWebinarLink.objects.filter(user=user, is_my=True):
-        webinar = user_webinar.webinar
+    for user_webinar_link in UserWebinarLink.objects.filter(user=user, is_my=True):
+        webinar = user_webinar_link.webinar
 
         web = [webinar.id, webinar.name]
 
@@ -29,7 +29,7 @@ def my(request):
             web.append('')
 
         web.append(webinar.format_date(is_month_name=False))
-        web.append(user_webinar.is_watched)
+        web.append(user_webinar_link.is_watched)
 
         mass.append(web)
 
@@ -60,21 +60,10 @@ def add(request):
                 break
     elif url.startswith('https://www.youtube.com/embed'):
         url = url.split('?')[0]
-    else:
-        return render(request, 'webinars/add.html',
-                      context={'alert': 'Ссылка на вебинар должен вести на сайт youtube.com'})
 
     webinar = Webinar.objects.create(name=name, author=author, date=date, url=url,
                                      description=description)
-
-    if UserWebinarLink.objects.filter(user=request.user, webinar=webinar).first() is None:
-        UserWebinarLink.objects.create(user=request.user, webinar=webinar, is_watched=False, is_my=True)
-    else:
-        print('почему-то уже есть в таблице UsersWebinars запись с такими же значениями')
-        res = UserWebinarLink.objects.get(user=request.user, webinar=webinar)
-        res.is_watched = False
-        res.is_my = True
-        res.save()
+    UserWebinarLink.objects.create(user=request.user, webinar=webinar, is_watched=False, is_my=True)
 
     photos = []
     files = {}
@@ -134,7 +123,9 @@ def show(request, id):
     for music_model in Music.objects.filter(webinar=webinar):
         musics.append([music_model.url, music_model.url[-10:]])
 
-    user_webinar = UserWebinarLink.objects.get(user=user, webinar=webinar)
+    user_webinar_link = UserWebinarLink.objects.filter(user=user, webinar=webinar).first()
+    if user_webinar_link is None:
+        user_webinar_link = UserWebinarLink.objects.create(user=user, webinar=webinar, is_my=False, is_watched=False)
 
     context['webinar'] = {
         'id': webinar.id,
@@ -146,8 +137,8 @@ def show(request, id):
         'photos': photos,
         'files': files,
         'musics': musics,
-        'watched': user_webinar.is_watched,
-        'is_my': user_webinar.is_my
+        'watched': user_webinar_link.is_watched,
+        'is_my': user_webinar_link.is_my
     }
 
     return render(request, 'webinars/show.html', context=context)
@@ -158,12 +149,12 @@ def make_watched(request, id):
     web = Webinar.objects.get(id=id)
     user = request.user
 
-    user_webinar = UserWebinarLink.objects.filter(user=user, webinar=web).first()
-    if user_webinar is None:
-        UserWebinarLink.objects.create(user=user, webinar=web, is_watched=True)
+    user_webinar_link = UserWebinarLink.objects.filter(user=user, webinar=web).first()
+    if user_webinar_link is None:
+        UserWebinarLink.objects.create(user=user, webinar=web, is_my=False, is_watched=True)
     else:
-        user_webinar.is_watched = True
-        user_webinar.save()
+        user_webinar_link.is_watched = True
+        user_webinar_link.save()
 
     return redirect(f'/webinars/{id}')
 
@@ -173,12 +164,12 @@ def make_no_watched(request, id):
     web = Webinar.objects.get(id=id)
     user = request.user
 
-    user_webinar = UserWebinarLink.objects.filter(user=user, webinar=web).first()
-    if user_webinar is None:
-        UserWebinarLink.objects.create(user=user, webinar=web, is_watched=False)
+    user_webinar_link = UserWebinarLink.objects.filter(user=user, webinar=web).first()
+    if user_webinar_link is None:
+        UserWebinarLink.objects.create(user=user, webinar=web, is_my=False, is_watched=False)
     else:
-        user_webinar.is_watched = False
-        user_webinar.save()
+        user_webinar_link.is_watched = False
+        user_webinar_link.save()
 
     return redirect(f'/webinars/{id}')
 
@@ -186,10 +177,9 @@ def make_no_watched(request, id):
 @login_required
 def remove(request, id):
     current_webinar = Webinar.objects.get(id=id)
-    user_webinar = UserWebinarLink.objects.get(user=request.user, webinar=current_webinar)
+    user_webinar_link = UserWebinarLink.objects.get(user=request.user, webinar=current_webinar)
 
-    if user_webinar.is_my:
+    if user_webinar_link.is_my:
         current_webinar.delete()
         current_webinar.save()
-        return redirect('/')
-    raise Http404('Это не ваш вебинар!')
+    return redirect('/')
