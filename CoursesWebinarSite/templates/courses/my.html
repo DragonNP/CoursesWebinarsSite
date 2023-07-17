@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Курсы{% endblock title %}
+
+{% block active_webinars %}{% endblock active_webinars %}
+{% block active_courses %}active{% endblock active_courses %}
+
+{% block content%}
+<div class="row">
+  <div class="col mb-4 text-right">
+    <a class="btn btn-primary" href="{% url 'add_course' %}" role="button">Импортировать курс</a>
+  </div>
+</div>
+<div class="row">
+</div>
+{% endblock content %}

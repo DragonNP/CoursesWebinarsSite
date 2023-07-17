@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Импортировать курсы{% endblock title %}
+
+{% block active_webinars %}{% endblock active_webinars %}
+{% block active_courses %}{% endblock active_courses %}
+
+{% block content%}
+<form class="form-signin needs-validation" id="course_add" action="{% url 'add_course' %}" method="post" novalidate>
+    {% csrf_token %}
+    <div class="form-group">
+        <h1 class="h3 mb-3 font-weight-normal">Импортировать курсы</h1>
+    </div>
+    {% if alert != "" %}
+    <div class="form-group">
+        <div class="alert alert-danger" role="alert">
+            {{alert}}
+        </div>
+    </div>
+    {% endif %}
+    {% csrf_token %}
+    <div class="form-group">
+        <label class="sr-only" for="url">Ссылка</label>
+        <input class="form-control" id="url" type="text" name="url" placeholder="Ссылка на курс(ы)"
+               pattern="(https?:\/\/)?(?:(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))(?::\d{2,5})?(?:\/[^\s]*)?"
+               required
+               autofocus>
+        <div class="invalid-feedback">
+            Укажите корректную ссылку
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-6 mt-3">
+                <label class="sr-only" for="email">Email</label>
+                <input class="form-control" id="email" type="email" name="email" placeholder="Адрес электронной почты"
+                       required
+                       autofocus>
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <label class="sr-only" for="password">Пароль</label>
+                <input class="form-control" id="password" type="password" name="password" placeholder="Пароль от аккаунта"
+                       required
+                       autofocus>
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Добавить</button>
+</form>
+{% endblock content%}
+
+{% block custom_sripts %}
+<script>
+(function () {
+  'use strict'
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  var forms = document.querySelectorAll('.needs-validation')
+
+  // Loop over them and prevent submission
+  Array.prototype.slice.call(forms)
+    .forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+
+        form.classList.add('was-validated')
+      }, false)
+    })
+})()
+
+
+
+</script>
+{% endblock custom_sripts %}

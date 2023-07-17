@@ -4,7 +4,7 @@ from django.db import models
 class Module(models.Model):
     name = models.CharField(max_length=150, blank=False)
     parent = models.ForeignKey("self", on_delete=models.CASCADE, blank=True)
-    is_parent = models.BooleanField()
+    is_root = models.BooleanField()
 
 
 class Lesson(models.Model):

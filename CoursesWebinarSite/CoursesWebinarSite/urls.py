@@ -29,7 +29,9 @@ urlpatterns = [
 
 # URL для курсов
 urlpatterns += [
-    path('courses/my', courses.empty, name='my_courses')
+    path('courses/my/', courses.my, name='my_courses'),
+    path('courses/add/', courses.add, name='add_course'),
+    path('courses/prepeare_add', courses.prepeare_add, name='123')
 ]
 
 # URL для вебинаров

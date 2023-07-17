@@ -149,7 +149,6 @@ class GetCourse:
         return lessons
 
     def _extract_from_lesson_data(self, url):
-        host = self.host
         protocol = self.protocol
         phpsessid5 = self.phpsessid5
         headers = self.headers
