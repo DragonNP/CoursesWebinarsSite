@@ -1,18 +1,17 @@
 from django.db import models
 
 
-class Course(models.Model):
+class Module(models.Model):
     name = models.CharField(max_length=150, blank=False)
-    author = models.CharField(max_length=25, blank=False)
-    description = models.CharField(max_length=250, blank=True)
-    date = models.DateField(blank=False)
+    parent = models.ForeignKey("self", on_delete=models.CASCADE, blank=True)
+    is_parent = models.BooleanField()
 
 
 class Lesson(models.Model):
     name = models.CharField(max_length=150, blank=False)
-    description = models.CharField(max_length=250, blank=True)
-    url = models.URLField(max_length=150, blank=False)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    module = models.ForeignKey(Module, on_delete=models.CASCADE)
+    description = models.CharField(max_length=300, blank=False)
+    text = models.CharField(max_length=2500, blank=False)
 
 
 class Material(models.Model):

@@ -6,7 +6,6 @@ from django.shortcuts import redirect
 from users.models import UserWebinarLink
 from webinars.models import Webinar, Author, Material, MaterialType
 
-
 @login_required
 def all_webinars(request):
     return redirect('/webinars/my')

@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from webinars.models import Webinar
-from courses.models import Course, Lesson
+from courses.models import Module, Lesson
 
 
 class UserWebinarLink(models.Model):
@@ -14,13 +14,13 @@ class UserWebinarLink(models.Model):
         unique_together = ('user', 'webinar')
 
 
-class UserCourseLink(models.Model):
+class UserModuleLink(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    module = models.ForeignKey(Module, on_delete=models.CASCADE)
     is_watched = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = ('user', 'course')
+        unique_together = ('user', 'module')
 
 
 class UserLessonLink(models.Model):

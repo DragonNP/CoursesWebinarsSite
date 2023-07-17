@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'webinars',
     'users',
     'home',
-    'courses'
+    'courses',
+    'getCourse'
 ]
 
 MIDDLEWARE = [
