@@ -2,12 +2,8 @@ import json
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from getCourse import GetCourse
-
-
-def empty(request):
-    return redirect('/')
 
 
 @login_required
@@ -35,27 +31,27 @@ def my(request):
     return render(request, 'courses/my.html', context=context)
 
 
+@login_required
 def add(request):
-    if request.method == 'GET':
-        return render(request, 'courses/add.html', context={'alert': ''})
-    elif request.method == 'POST':
-        response = request.POST
-        url: str = response['url']
-        email: str = response['email']
-        password: str = response['password']
-
-        if 'http://' in url:
-            url = url.replace('http://', '')
-        elif 'https://' in url:
-            url = url.replace('https://', '')
-        host = url.split('/')[0]
-
-        return render(request, 'courses/add_show.html',
-                      context={'url': f'/courses/prepeare_add?h={host}&e={email}&p={password}'})
+    return render(request, 'courses/add.html')
 
 
-def prepeare_add(request):
+@login_required
+def get_list(request):
+    js = {'success': True, 'data': {}, 'errorMessage': ''}
+
+    if request.method != 'GET':
+        js['success'] = False
+        js['errorMessage'] = 'Данный метод не поддерживается'
+        return HttpResponse(json.dumps(js))
+
     response = request.GET
+
+    if 'url' not in response or 'email' not in response or 'password' not in response:
+        js['success'] = False
+        js['errorMessage'] = 'url, email, password не указаны'
+        return HttpResponse(json.dumps(js))
+
     url: str = response['url']
     email: str = response['email']
     password: str = response['password']
@@ -69,11 +65,10 @@ def prepeare_add(request):
     get_course = GetCourse(host)
     res = get_course.login(email, password)
     if not res[0]:
-        return render(request, 'courses/add.html', context={'alert': res[1]})
+        js['success'] = False
+        js['errorMessage'] = res[1]
+        return HttpResponse(json.dumps(js))
 
-    trenings = get_course.get_all_trenings()
-    return HttpResponse(json.dumps(trenings))
-
-
-def test(request):
-    return render(request, 'courses/test.html')
+    ls = get_course.get_all_trenings()
+    js['data'] = ls
+    return HttpResponse(json.dumps(js))

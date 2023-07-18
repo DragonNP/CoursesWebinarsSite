@@ -36,7 +36,10 @@ class GetCourse:
         headers['Content-Length'] = str(len(body))
 
         response = requests.post(request_url, data=body, headers=headers)
-        result = json.loads(response.text)
+        try:
+            result = json.loads(response.text)
+        except json.decoder.JSONDecodeError as e:
+            return False, 'Данный сайт не поддерживается'
 
         if 'errorMessage' in result:
             return False, result['errorMessage']

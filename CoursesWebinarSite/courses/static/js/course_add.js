@@ -1,13 +1,3 @@
-async function fetchData() {
-    const response = await fetch("{{ url }}");
-    const data = await response.json();
-    var i = 0;
-    for(var k in data) {
-        document.getElementById('courses').appendChild(add_module(k, data[k], i, 0));
-        i += 1;
-    }
-}
-
 function add_lesson(k, url, r, ls_index) {
     var li = document.createElement("li");
     li.setAttribute("id", 'li_' + r + (ls_index));
@@ -258,4 +248,3 @@ function del(id) {
     li = document.getElementById('li_'+id);
     li.remove();
 }
-fetchData()
