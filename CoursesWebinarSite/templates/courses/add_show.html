@@ -19,6 +19,7 @@
 async function fetchData() {
     const response = await fetch("{{ url }}");
     const data = await response.json();
+    console.log(data);
     for(var k in data) {
         document.getElementById('courses').appendChild(add_module(k, data[k]));
     }

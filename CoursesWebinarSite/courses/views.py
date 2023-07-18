@@ -70,5 +70,10 @@ def prepeare_add(request):
     res = get_course.login(email, password)
     if not res[0]:
         return render(request, 'courses/add.html', context={'alert': res[1]})
+
     trenings = get_course.get_all_trenings()
     return HttpResponse(json.dumps(trenings))
+
+
+def test(request):
+    return render(request, 'courses/test.html')

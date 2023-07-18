@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Импортировать курсы{% endblock title %}
+
+{% block active_webinars %}{% endblock active_webinars %}
+{% block active_courses %}{% endblock active_courses %}
+
+
+{% block content %}
+<ul id="courses">
+</ul>
+{% endblock content %}
+
+{% block custom_sripts %}
+<script src="{% static 'js/course_add.js' %}"></script>
+{% endblock custom_sripts %}
