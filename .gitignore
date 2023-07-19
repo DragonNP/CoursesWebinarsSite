@@ -1,2 +1,4 @@
 /CoursesWebinarSite/.env
 .idea
+/CoursesWebinarSite/static/courses/
+/CoursesWebinarSite/ffmpeg.exe

@@ -1,250 +1,183 @@
-function add_lesson(k, url, r, ls_index) {
-    var li = document.createElement("li");
-    li.setAttribute("id", 'li_' + r + (ls_index));
+let account_url = ''
+let account_email = ''
+let account_password = ''
 
-    var input = document.createElement("input");
-    input.value = k;
-    input.setAttribute("name", r + (ls_index));
-    input.setAttribute("id", 'input_' + r + (ls_index));
-    input.setAttribute("class", "form-control border border-primary");
-    input.setAttribute("type", "text");
-    input.setAttribute("placeholder", "Урок");
-    input.setAttribute("required", "");
-    input.setAttribute("disabled", "");
-
-    var div_group = document.createElement("div");
-    div_group.setAttribute("class", "input-group mb-1");
-
-    var div_group_append = document.createElement("div");
-    div_group_append.setAttribute("class", "input-group-append");
-
-    var btn_down = document.createElement("button");
-    btn_down.setAttribute("class", "btn btn-outline-primary");
-    btn_down.setAttribute("button", "button");
-    btn_down.setAttribute("id", 'down_' + r + (ls_index));
-    btn_down.setAttribute("onclick", "down('" + (r + (ls_index)) + "')");
-    btn_down.innerHTML = "&darr;";
-
-    var btn_up = document.createElement("button");
-    btn_up.setAttribute("class", "btn btn-outline-primary");
-    btn_up.setAttribute("button", "button");
-    btn_up.setAttribute("id", 'up_' + r + (ls_index));
-    btn_up.setAttribute("onclick", "up('" + (r + (ls_index)) + "')");
-    btn_up.innerHTML = "&uarr;";
-
-    var btn_del = document.createElement("button");
-    btn_del.setAttribute("class", "btn btn-outline-danger");
-    btn_del.setAttribute("button", "button");
-    btn_del.setAttribute("id", 'del_' + r + (ls_index));
-    btn_del.setAttribute("onclick", "del('" + r + (ls_index) + "')");
-    btn_del.innerHTML = "X";
-
-    div_group.appendChild(input)
-    div_group_append.appendChild(btn_down)
-    div_group_append.appendChild(btn_up)
-    div_group_append.appendChild(btn_del)
-    div_group.appendChild(div_group_append)
-
-    li.appendChild(div_group)
-    return li
-}
-
-function add_module(name, data, r, ls_index) {
-    var new_r = r + (ls_index)
-
-    var li = document.createElement("li");
-    li.setAttribute("id", 'li_' + new_r);
-
-    var input = document.createElement("input");
-    input.value = name;
-    input.setAttribute("name", new_r);
-    input.setAttribute("id", 'input_' + new_r);
-    input.setAttribute("class", "form-control border border-warning");
-    input.setAttribute("type", "text");
-    input.setAttribute("placeholder", "Модуль");
-    input.setAttribute("required", "");
-    input.setAttribute("disabled", "");
-
-    var div_group = document.createElement("div");
-    div_group.setAttribute("class", "input-group mb-1");
-
-    var div_group_append = document.createElement("div");
-    div_group_append.setAttribute("class", "input-group-append");
-
-    var btn_down = document.createElement("button");
-    btn_down.setAttribute("class", "btn btn-outline-warning");
-    btn_down.setAttribute("button", "button");
-    btn_down.setAttribute("id", 'down_' + new_r);
-    btn_down.setAttribute("onclick", "down('" + new_r + "')");
-    btn_down.innerHTML = "&darr;";
-
-    var btn_up = document.createElement("button");
-    btn_up.setAttribute("class", "btn btn-outline-warning");
-    btn_up.setAttribute("button", "button");
-    btn_up.setAttribute("id", 'up_' + new_r);
-    btn_up.setAttribute("onclick", "up('" + new_r + "')");
-    btn_up.innerHTML = "&uarr;";
-
-    var btn_del = document.createElement("button");
-    btn_del.setAttribute("class", "btn btn-outline-danger");
-    btn_del.setAttribute("button", "button");
-    btn_del.setAttribute("id", 'del_' + new_r);
-    btn_del.setAttribute("onclick", "del('" + new_r + "')");
-    btn_del.innerHTML = "X";
-
-    div_group.appendChild(input)
-    div_group_append.appendChild(btn_down)
-    div_group_append.appendChild(btn_up)
-    div_group_append.appendChild(btn_del)
-    div_group.appendChild(div_group_append)
-
-    var ul = document.createElement("ul");
-    ul.setAttribute("id", 'ul_' + new_r);
-
-    setTimeout(function () {
-        ls_index = 0
-        for(var k in data[0]) {
-            if (data[0][k][1] == 'module') {
-                ul.appendChild(add_module(k, data[0][k], new_r + '.', ls_index));
-            }
-            else {
-                ul.appendChild(add_lesson(k, data[0][k][0], new_r + '.', ls_index));
-            }
-            ls_index++;
-        }
-    }, 100);
-    li.appendChild(div_group)
-    li.appendChild(ul)
-    return li
-}
-
-function update_input_group(id, new_id) {
-    input = document.getElementById('input_' + id);
-    input.setAttribute("id", 'input_' + new_id);
-    input.setAttribute("name", new_id);
-
-    btn_down = document.getElementById('down_' + id);
-    btn_down.setAttribute("id", 'down_' + new_id);
-    btn_down.setAttribute("onclick", "down('" + new_id + "')");
-
-    btn_up = document.getElementById('up_' + id);
-    btn_up.setAttribute("id", 'up_' + new_id);
-    btn_up.setAttribute("onclick", "up('" + new_id + "')");
-}
-
-function update_ul(id, new_id) {
-    ul = document.getElementById('ul_' + id);
-    if (ul) {
-        ul.setAttribute("id", 'ul_' + new_id);
-
-        var i = 0;
-        while (true) {
-            var li = document.getElementById('li_'+id+'.'+i);
-            if (li) {
-                li.setAttribute("id", 'li_' + new_id+'.'+i);
-                update_input_group(id+'.'+i, new_id+'.'+i);
-                update_ul(id+'.'+i, new_id+'.'+i);
-                i++;
-            }
-            else {
-                break
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
             }
         }
     }
+    return cookieValue;
 }
 
-function up(name) {
-    mass_indexes = name.split('.');
-    curr_index = parseInt(mass_indexes[mass_indexes.length - 1]);
+async function save_list(event) {
+    event.preventDefault();
+    const list = serializeFormList(document.getElementById("form_list"));
 
-    if (curr_index != 0) {
-        previous_indexes = mass_indexes;
-        previous_indexes[previous_indexes.length - 1] = parseInt(previous_indexes[previous_indexes.length - 1]) - 1
-        previous_name = previous_indexes.join('.');
-
-        update_ul(previous_name, name + '_');
-        update_ul(name, previous_name);
-        update_ul(name + '_', name);
-
-        document.getElementById('li_' + previous_name).setAttribute("id", 'li_' + name + '_');
-        document.getElementById('li_' + name).setAttribute("id", 'li_' + previous_name);
-        document.getElementById('li_' + name + '_').setAttribute("id", 'li_' + name);
-
-        update_input_group(previous_name, name + '_');
-        update_input_group(name, previous_name);
-        update_input_group(name + '_', name);
-
-        element = document.getElementById('li_' + previous_name);
-        element.parentNode.insertBefore(element, document.getElementById('li_' + name));
-    }
-    else {
-        mass_indexes.pop();
-        mass_indexes.pop();
-        new_name = mass_indexes.join('.');
-
-        var i = 0;
-        while (true) {
-            if (new_name != '') {
-                li_id = new_name + '.' + i
-            }
-            else {
-                li_id = i
-            }
-
-            li = document.getElementById('li_' + li_id);
-            if (li) {
-                i++;
-            }
-            else {
-                break
-            }
-        }
-        curr_li = document.getElementById('li_' + name);
-
-        if (new_name == '') {
-            curr_li.setAttribute("id", 'li_' + i);
-            update_input_group(name, i);
-            update_ul(name, i);
-            document.getElementById('courses').appendChild(curr_li);
+    let js = {}
+    let i = 0;
+    while (true) {
+        if (list[i]) {
+            module = recursion(list, i+'.');
+            js[list[i][0]] = [module, list[i][1]];
+            i++;
         }
         else {
-            curr_li.setAttribute("id", 'li_' + new_name + '.' + i);
-            update_input_group(name, new_name + '.' + i);
-            update_ul(name, new_name + '.' + i);
-            document.getElementById('ul_'+ new_name).appendChild(curr_li);
+            break;
         }
+    }
+    body = {'account': {'url': account_url, 'email': account_email, 'password': account_password}, 'data': js}
+    url = '/api/v1/curses/list';
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Content-Length': body.length,
+          'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify(body),
+    });
+    const data = await response.json();
+//    if (data['success'] == false) {
+//      document.getElementById("alert").innerHTML = data['errorMessage'];
+//      document.getElementById("div_alert").style.display = "inline";
+//    }
+//    else {
+//        await show_list_courses(data['data']);
+//    }
+}
 
-        var i = 1;
-        var host = name.split('.').slice(0, -1).join('.');
-        while (true) {
-            li = document.getElementById('li_' + host + '.' + i);
-            if (li){
-                li.setAttribute("id", 'li_' + host + '.' + (i-1));
-                update_ul(host + '.' + i, host + '.' + (i-1));
-                update_input_group(host + '.' + i, host + '.' + (i-1));
-                i++;
+function recursion(list, domen) {
+    let js = {}
+    let i = 0;
+    while (true) {
+        if (list[domen + i]) {
+            if (list[domen + i][1] == 'module') {
+                modules = recursion(list, domen + i+'.');
+                js[list[domen + i][0]] = [modules, list[domen + i][1]]
             }
             else {
-                break
+                js[list[domen + i][0]] = [list[domen + i][2], list[domen + i][1]]
             }
+            i++;
+        }
+        else {
+            return js;
         }
     }
 }
 
-function down(name) {
-    mass_indexes = name.split('.');
-    curr_index = parseInt(mass_indexes[mass_indexes.length - 1]);
+function toggleButton() {
+  const submit = document.getElementById('submit')
+  submit.classList.toggle('d-none')
 
-    next_indexes = mass_indexes;
-    next_indexes[next_indexes.length - 1] = parseInt(next_indexes[next_indexes.length - 1]) + 1
+  const loader = document.getElementById('loader_btn')
+  loader.classList.toggle('d-none')
+}
 
-    next_name = next_indexes.join('.');
-    if (document.getElementById('li_' + next_name)) {
-        up(next_name);
+function serializeFormLogin(formNode) {
+  const { elements } = formNode
+  params = {}
+  Array.from(elements)
+    .forEach((element) => {
+      const { name, value } = element
+      if (name != '') {
+        params[name] = [value]
+      }
+    })
+  return params
+}
+
+function serializeFormList(formNode) {
+  const { elements } = formNode
+  params = {}
+  Array.from(elements)
+    .forEach((element) => {
+      const { name, value } = element
+      if (name != '') {
+
+          input = document.getElementsByName(name)[0]
+          data_type = input.getAttribute("data-type");
+
+          if (data_type == 'lesson') {
+                data_id = input.getAttribute("data-id");
+                params[name] = [value, data_type, data_id]
+            }
+          else {
+           params[name] = [value, data_type]
+            }
+      }
+    })
+  return params
+}
+
+async function form_send(form){
+    document.getElementById("div_alert").style.display = "none";
+    url = '/api/v1/curses/list'
+    params = serializeFormLogin(form);
+
+    toggleButton();
+    const response = await fetch(url + '?' + new URLSearchParams(params));
+    const data = await response.json();
+    toggleButton();
+
+    if (data['success'] == false) {
+      document.getElementById("alert").innerHTML = data['errorMessage'];
+      document.getElementById("div_alert").style.display = "inline";
+    }
+    else {
+        await show_list_courses(data['data']);
     }
 }
 
-function del(id) {
-    li = document.getElementById('li_'+id);
-    li.remove();
+function show_list_courses(data) {
+    account_url = document.getElementById('url').value
+    account_email = document.getElementById('email').value
+    account_password = document.getElementById('password').value
+
+    document.getElementById("course_add").remove();
+
+    form = document.createElement('form');
+    form.setAttribute('class', 'form-signin');
+    form.setAttribute('id', 'form_list');
+    form.addEventListener('submit', save_list);
+
+    btn = document.createElement('button');
+    btn.setAttribute('class', 'btn btn-lg btn-success btn-block mb-3');
+    btn.setAttribute('type', 'submit');
+    btn.innerHTML = 'Импортировать';
+    form.appendChild(btn);
+
+    ul = document.createElement("ul");
+    ul.setAttribute("id", "courses");
+    form.appendChild(ul);
+
+    document.getElementById('content').appendChild(form);
+    var i = 0;
+    for(var k in data) {
+       ul.appendChild(add_module(k, data[k], i, 0));
+       i += 1;
+    }
 }
+
+form = document.getElementById('course_add');
+form.addEventListener('submit', function (event) {
+    event.preventDefault()
+    if (!form.checkValidity()) {
+      event.stopPropagation();
+      document.getElementById("alert").innerHTML = "Пожалуйста, исправьте введенные данные";
+      document.getElementById("div_alert").style.display = "inline";
+    }
+    else {
+        form_send(form);
+    }
+    form.classList.add('was-validated')
+}, false)

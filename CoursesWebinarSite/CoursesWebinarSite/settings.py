@@ -16,6 +16,10 @@ from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+STATICFILES_DIRS = [
+    BASE_DIR / "static"
+]
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -26,7 +30,6 @@ SECRET_KEY = 'django-insecure-5r2aimk5l^@1)4@9#*%t^r&s7s%fv12x+3^9(fjkf_zuv=p=g$
 DEBUG = True
 
 ALLOWED_HOSTS = ['192.168.1.0', 'localhost', '127.0.0.1']
-
 
 # Application definition
 
@@ -74,7 +77,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'CoursesWebinarSite.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -86,9 +88,12 @@ DATABASES = {
         'PASSWORD': config('DATABASE_PASSWORD'),
         'HOST': config('DATABASE_HOST'),
         'PORT': '',
+        'OPTIONS': {
+            'init_command': f'ALTER DATABASE {config("DATABASE_NAME")} CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci',
+            'charset': 'utf8mb4',
+            'use_unicode': True, },
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -108,7 +113,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -119,7 +123,6 @@ TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/

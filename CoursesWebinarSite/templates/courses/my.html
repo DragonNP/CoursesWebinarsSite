@@ -12,5 +12,23 @@
   </div>
 </div>
 <div class="row">
+  {% for cur in courses %}
+  <div class="col-md-4 mb-4">
+    {% if cur.is_watched == True %}
+    <div class="card border-success">
+    {% else %}
+    <div class="card border-danger">
+    {% endif %}
+      <div class="card-body">
+        <h4 class="card-title">{{cur.name}}</h4>
+    {% if cur.is_watched == True %}
+        <a href='/courses/{{cur.id}}/' class="btn btn-outline-success">Перейти</a>
+    {% else %}
+        <a href='/courses/{{cur.id}}/' class="btn btn-danger">Перейти</a>
+    {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
 </div>
 {% endblock content %}

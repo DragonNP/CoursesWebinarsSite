@@ -7,7 +7,6 @@
 {% block active_courses %}{% endblock active_courses %}
 
 {% block content%}
-<div id="tree"></div>
 <form class="form-signin needs-validation" id="course_add" action="" novalidate>
     <div class="form-group">
         <h1 class="h3 mb-3 font-weight-normal">Импортировать курсы</h1>
@@ -52,91 +51,9 @@
 {% endblock content%}
 
 {% block custom_sripts %}
-<script src="{% static 'js/course_add.js' %}"></script>
 <script>
     document.getElementById("div_alert").style.display = "none";
-
-    function toggleButton() {
-      const submit = document.getElementById('submit')
-      submit.classList.toggle('d-none')
-
-      const loader = document.getElementById('loader_btn')
-      loader.classList.toggle('d-none')
-    }
-
-    function serializeForm(formNode) {
-      const { elements } = formNode
-      params = {}
-      Array.from(elements)
-        .forEach((element) => {
-          const { name, value } = element
-          params[name] = value
-        })
-      return params
-    }
-
-    async function form_send(form){
-        document.getElementById("div_alert").style.display = "none";
-        url = '{% url 'api_curses_get_list' %}'
-        params = serializeForm(form);
-
-        toggleButton();
-        const response = await fetch(url + '?' + new URLSearchParams(params));
-        const data = await response.json();
-        toggleButton();
-
-        if (data['success'] == false) {
-          document.getElementById("alert").innerHTML = data['errorMessage'];
-          document.getElementById("div_alert").style.display = "inline";
-        }
-        else {
-            await show_list_courses(data['data']);
-        }
-    }
-    function show_list_courses(data) {
-        document.getElementById("course_add").remove();
-
-        ul = document.createElement("ul");
-        ul.setAttribute("id", "courses");
-        document.getElementById('tree').appendChild(ul);
-
-        var i = 0;
-        for(var k in data) {
-           document.getElementById('courses').appendChild(add_module(k, data[k], i, 0));
-           i += 1;
-        }
-    }
-
-
-
 </script>
-
-<script>
-(function () {
-  'use strict'
-
-  // Fetch all the forms we want to apply custom Bootstrap validation styles to
-  var forms = document.querySelectorAll('.needs-validation')
-
-  // Loop over them and prevent submission
-  Array.prototype.slice.call(forms)
-    .forEach(function (form) {
-      form.addEventListener('submit', function (event) {
-        event.preventDefault()
-        if (!form.checkValidity()) {
-          event.stopPropagation();
-          document.getElementById("alert").innerHTML = "Пожалуйста, исправьте введенные данные";
-          document.getElementById("div_alert").style.display = "inline";
-        }
-        else {
-            form_send(form);
-        }
-        form.classList.add('was-validated')
-      }, false)
-    })
-})()
-
-
-
-</script>
+<script src="{% static 'js/course_show_list.js' %}"></script>
+<script src="{% static 'js/course_add.js' %}"></script>
 {% endblock custom_sripts %}

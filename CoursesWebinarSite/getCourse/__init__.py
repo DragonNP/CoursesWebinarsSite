@@ -69,6 +69,9 @@ class GetCourse:
 
         return formatted_data
 
+    def get_info_from_lesson(self, url):
+        return self._extract_from_lesson_data(url)
+
     def _get_trenings(self, html):
         host = self.host
         protocol = self.protocol
@@ -160,6 +163,7 @@ class GetCourse:
         soup = BeautifulSoup(response.text, "html.parser")
 
         title = soup.find('h2', class_='lesson-title-value').text
+
         description = soup.find('span', class_='lesson-description-value').text
 
         text = ''
