@@ -166,10 +166,10 @@ class GetCourse:
 
         description = soup.find('span', class_='lesson-description-value').text
 
-        text = ''
+        text = ''.encode('utf-8')
         div = soup.find('div', class_='f-text')
         if not (div is None):
-            text = div.text
+            text = div.text.encode('utf-8')
 
         videos = []
         for div in soup.find_all('div', id='player'):
