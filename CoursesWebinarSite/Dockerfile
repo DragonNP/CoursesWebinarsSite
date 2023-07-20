@@ -4,6 +4,7 @@ ENV PYTHONUNBUFFERED 1
 RUN apt-get update && apt-get install -y \
   default-libmysqlclient-dev \
   pkg-config \
+  ffmpeg \
   gcc \
   && rm -rf /var/lib/apt/lists/*
 

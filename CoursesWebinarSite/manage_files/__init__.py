@@ -18,7 +18,7 @@ class LoggerOutputs:
 
 def save_youtube_video(domen: str, id: str, url: str):
     ydl_opts = {
-        "outtmpl": f'{str(BASE_DIR)}/static/{domen}/{id}.%(ext)s',
+        "outtmpl": f'{str(BASE_DIR)}/storage/static/{domen}/{id}.%(ext)s',
         "logger": LoggerOutputs()
     }
     filename = ''
@@ -35,7 +35,7 @@ def save_youtube_video(domen: str, id: str, url: str):
 
 
 def save_m3u8_video(domen: str, id: str, url: str):
-    path_to_file = f'{str(BASE_DIR)}\\static\\{domen}\\{id}.mp4'
+    path_to_file = f'{str(BASE_DIR)}\\storage\\static\\{domen}\\{id}.mp4'
     convert_line = f'ffmpeg -hide_banner -loglevel error -protocol_whitelist file,http,https,tcp,tls,crypto -i "{url}" -bsf:a aac_adtstoasc -crf 18 {path_to_file}'
     os.system(convert_line)
 
@@ -44,11 +44,11 @@ def save_m3u8_video(domen: str, id: str, url: str):
 
 def save_file(domen: str, id: str, url: str):
     name = str(id) + '.' + url.split('.')[-1].split('/')[0]
-    path_to_save = f'{str(BASE_DIR)}\\static\\{domen}\\{name}'
+    path_to_save = f'{str(BASE_DIR)}\\storage\\static\\{domen}\\{name}'
 
     with urlopen(url) as file:
         content = file.read()
     with open(path_to_save, 'wb') as download:
         download.write(content)
-    print(f'/static/{domen}/{name}')
+
     return f'/static/{domen}/{name}'
