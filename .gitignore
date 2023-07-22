@@ -1,4 +1,3 @@
-/CoursesWebinarSite/.env
+.env
 .idea
-/CoursesWebinarSite/storage/static/courses/
-/CoursesWebinarSite/ffmpeg.exe
+/courses_webinars/storage/static/courses/*

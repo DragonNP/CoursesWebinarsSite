@@ -1,6 +1,6 @@
 from urllib.request import urlopen
 import yt_dlp
-from CoursesWebinarSite.settings import BASE_DIR
+from courses_webinars.settings import BASE_DIR
 import os
 
 
