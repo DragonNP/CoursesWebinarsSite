@@ -42,9 +42,41 @@ def show_module(request, id):
             'name': module.name
         }
         mass.append(cur)
+    context['modules'] = mass
 
-    context['courses'] = mass
-    return render(request, 'courses/my.html', context=context)
+    mass = []
+    for lesson in Lesson.objects.filter(module=id):
+        user_lesson_link = UserLessonLink.objects.filter(user=user, lesson=lesson).first()
+        if user_lesson_link is None:
+            is_watched = False
+        else:
+            is_watched = user_lesson_link.is_watched
+
+        cur = {
+            'id': str(lesson.pk),
+            'name': lesson.name,
+            'description': lesson.description,
+            'is_watched': is_watched
+        }
+        mass.append(cur)
+    context['lessons'] = mass
+
+    return render(request, 'courses/module.html', context=context)
+
+
+def show_lesson(request, id):
+    user = request.user
+    context = {'lesson': {}}
+
+    lesson = Lesson.objects.get(pk=id)
+    user_lesson_link = UserLessonLink.objects.get(user=user, lesson=lesson)
+
+    context['lesson']['watched'] = user_lesson_link.is_watched
+    context['lesson']['name'] = lesson.name
+    context['lesson']['text'] = lesson.text.decode('utf-8')
+
+    return render(request, 'courses/lesson.html', context=context)
+
 
 @login_required
 def add(request):

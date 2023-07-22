@@ -32,7 +32,8 @@ urlpatterns += [
     path('api/v1/curses/list', courses.list, name='api_curses_list'),
     path('courses/my/', courses.my, name='my_courses'),
     path('courses/add/', courses.add, name='add_course'),
-    path('courses/<str:id>/', courses.show_module, name='show_module'),
+    path('courses/modules/<str:id>/', courses.show_module, name='show_module'),
+    path('courses/lessons/<str:id>/', courses.show_lesson, name='show_lesson'),
 ]
 
 # URL для вебинаров

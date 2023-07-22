@@ -22,9 +22,9 @@
       <div class="card-body">
         <h4 class="card-title">{{cur.name}}</h4>
     {% if cur.is_watched == True %}
-        <a href='/courses/{{cur.id}}/' class="btn btn-outline-success">Перейти</a>
+        <a href='/courses/modules/{{cur.id}}/' class="btn btn-outline-success">Перейти</a>
     {% else %}
-        <a href='/courses/{{cur.id}}/' class="btn btn-danger">Перейти</a>
+        <a href='/courses/modules/{{cur.id}}/' class="btn btn-danger">Перейти</a>
     {% endif %}
       </div>
     </div>

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{lesson.name}}{% endblock title %}
+
+{% block active_webinars %}{% endblock active_webinars %}
+{% block active_courses %}{% endblock active_courses %}
+
+
+{% block content %}
+<link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet"/>
+<div class="row mb-4">
+    <div class="col-12 text-right">
+        {% if lesson.watched == True %}
+        <a class="btn btn-outline-danger" href="/webinars/{{webinar.id}}/make/no_watched/" role="button">Отметить как
+            непросмотренное</a>
+        {% else %}
+        <a class="btn btn-success" href="/webinars/{{webinar.id}}/make/watched/" role="button">Отметить как
+            просмотренное</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        {% if lesson.watched == True %}
+        <div class="card border-success">
+        {% else %}
+        <div class="card border-danger">
+            {% endif %}
+            <div class="card-body">
+                <h1 class="card-title text-center">{{lesson.name}}</h1>
+                <h6 class="card-subtitle mb-2 text-muted">{{lesson.description}}</h6>
+                <p class="card-text">{{lesson.text}}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block custom_scripts %}
+<script src="https://vjs.zencdn.net/8.3.0/video.min.js"></script>
+{% endblock custom_scripts %}
