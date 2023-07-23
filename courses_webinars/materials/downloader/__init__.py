@@ -52,7 +52,7 @@ class Downloader:
 
         self._check_path()
 
-        filename = str(uuid.uuid4()) + '.' + url.split('.')[-1].split('?')[0]
+        filename = str(uuid.uuid4()) + '.' + url.split('.')[-1].split('/')[0].split('?')[0]
         path_to_save = f'{base_dir}/temp/{filename}'
 
         try:

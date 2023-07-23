@@ -172,7 +172,8 @@ class GetCourse:
         else:
             description = soup.find('span', class_='lesson-description-value').text
 
-        text = ''
+        images = []
+        text = ''.encode('utf-8')
         blocks = soup.find('div', class_='lite-page block-set').find_all()
         for div in blocks:
             it_block = div.find('div', class_='lt-block')
@@ -183,8 +184,10 @@ class GetCourse:
                 continue
             if it_block.find_all('button'):
                 continue
+            for img in it_block.find_all('img'):
+                images.append('https:' + img.attrs['src'])
             for p in it_block.find_all('p'):
-                text += p.text + '\n'
+                text += p.text.encode('utf-8') + '\n'.encode('utf-8')
 
         videos = []
         for div in soup.find_all('div', id='player'):
@@ -204,10 +207,6 @@ class GetCourse:
         urls_audios = []
         for audio in soup.find_all('audio'):
             urls_audios.append(audio.attrs['src'])
-
-        images = []
-        for img in soup.find_all('div', class_='image-wrapper'):
-            images.append('https:' + img.find('img').attrs['src'])
 
         return True, {'description': description, 'text': text, 'videos': videos, 'audio': urls_audios,
                       'images': images}
