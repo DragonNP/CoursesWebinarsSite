@@ -152,8 +152,6 @@ def parse_list(user, get_course, parent, js):
             UserLessonLink.objects.create(user=user, lesson=lesson)
 
             for image in information['images']:
-                image = image.replace('https:////', 'https://')
-
                 task_id = materials.tasks.add_image_to_lesson.delay(lesson.pk, image).id
                 UserTaskLink.objects.create(user=user, task_id=task_id)
 
@@ -164,12 +162,8 @@ def parse_list(user, get_course, parent, js):
                 elif video['type'] == 'm3u8':
                     task_id = materials.tasks.add_video_to_lesson.delay(lesson.pk, video['url'], VideoType.M3U8)
                     UserTaskLink.objects.create(user=user, task_id=task_id)
-                else:
-                    print('Неизвестный тип', video)
 
             for audio in information['audio']:
-                audio = audio.replace('https:////', 'https://')
-
                 task_id = materials.tasks.add_audio_to_lesson.delay(lesson.pk, audio)
                 UserTaskLink.objects.create(user=user, task_id=task_id)
 

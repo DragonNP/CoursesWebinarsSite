@@ -145,7 +145,11 @@ class GetCourse:
         for li in ul.children:
             if type(li) == NavigableString:
                 continue
+            if 'user-state-not_reached' in li.attrs['class']:
+                continue
+
             div = li.find('div', class_=['link', 'title'])
+
             div.span.decompose()
             if with_data:
                 result = self._extract_from_lesson_data(protocol + host + div.attrs['href'])

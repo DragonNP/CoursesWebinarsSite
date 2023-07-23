@@ -1,3 +1,5 @@
+import json
+
 from MySQLdb import IntegrityError
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponse
@@ -56,5 +58,5 @@ def get_tasks(request):
     user_tasks = UserTaskLink.objects.filter(user=user)
     for user_task in user_tasks:
         response.append(user_task.task_id)
-    return HttpResponse(response)
+    return HttpResponse(json.dumps(response))
 

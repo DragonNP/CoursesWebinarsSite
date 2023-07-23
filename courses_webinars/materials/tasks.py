@@ -22,7 +22,7 @@ def add_video_to_lesson(self, lesson_pk: int, url: str, video_type: VideoType):
     logger.info('Запуск таска по добавлению видео')
     self.update_state(state='PROGRESS', meta={'process_percent': 0})
     if video_type == VideoType.YOUTUBE:
-        result = downloader.save_youtube_video(url)
+        result = downloader.save_youtube_video(self, url)
     else:
         result = downloader.save_m3u8_video(self, url)
     logger.info(f'Видео скачалось: {result}')

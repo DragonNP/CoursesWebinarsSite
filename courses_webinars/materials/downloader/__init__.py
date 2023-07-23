@@ -9,19 +9,27 @@ class Downloader:
     def __init__(self, base_dir):
         self._base_dir = str(base_dir)
 
-    def save_youtube_video(self, url: str):
+    def save_youtube_video(self, celery_task, url: str):
+        def empty(d):
+            pass
+
+        def update_progress(d):
+            celery_task.update_state(state='PROGRESS', meta={'process_percent': float(d['_percent_str'][:-1]) / 5})
+
         base_dir = self._base_dir
 
         self._check_path()
 
         ydl_opts = {
-            "outtmpl": f'{base_dir}/temp/%(title)s.%(ext)s'
+            "outtmpl": f'{base_dir}/temp/%(title)s.%(ext)s',
+            'noprogress': True,
+            'progress_hooks': [empty, update_progress, empty]
         }
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(url, download=True)
-                filename = ydl.prepare_filename(info)
-            print(filename)
+                path_to_file = ydl.prepare_filename(info)
+            filename = path_to_file.split('/')[-1]
             return True, filename
         except yt_dlp.utils.DownloadError as e:
             return False, e
@@ -60,7 +68,6 @@ class Downloader:
                 content = file.read()
             with open(path_to_save, 'wb') as download:
                 download.write(content)
-            print(filename)
             return True, filename
         except Exception as e:
             return False, e
@@ -71,7 +78,6 @@ class Downloader:
         try:
             path_to_file = f'{base_dir}/temp/{filename}'
             os.remove(path_to_file)
-            print(filename)
             return True, ''
         except Exception as e:
             return False, e
