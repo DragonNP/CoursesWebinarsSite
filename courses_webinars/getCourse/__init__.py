@@ -148,28 +148,43 @@ class GetCourse:
             div = li.find('div', class_=['link', 'title'])
             div.span.decompose()
             if with_data:
-                data = self._extract_from_lesson_data(protocol + host + div.attrs['href'])
-                lessons[div.decode_contents().strip()] = [data, 'lesson']
+                result = self._extract_from_lesson_data(protocol + host + div.attrs['href'])
+                if result[0]:
+                    lessons[div.decode_contents().strip()] = [result[1], 'lesson']
             else:
                 lessons[div.decode_contents().strip()] = [protocol + host + div.attrs['href'], 'lesson']
         return lessons
 
     def _extract_from_lesson_data(self, url):
-        protocol = self.protocol
         phpsessid5 = self.phpsessid5
         headers = self.headers
 
         response = requests.get(url, cookies={'PHPSESSID5': phpsessid5}, headers=headers)
         soup = BeautifulSoup(response.text, "html.parser")
 
-        title = soup.find('h2', class_='lesson-title-value').text
+        err_div = soup.find('div', style='border: 3px dashed red; padding: 30px; padding-top: 10px; margin-top: 20px; ')
+        if err_div and err_div.find('h3') and err_div.find('h3').text == 'Нет доступа':
+            print('Нет доступа к уроку')
+            return False, {}
 
-        description = soup.find('span', class_='lesson-description-value').text
+        if soup.find('span', class_='lesson-description-value') is None:
+            description = ''
+        else:
+            description = soup.find('span', class_='lesson-description-value').text
 
-        text = ''.encode('utf-8')
-        div = soup.find('div', class_='f-text')
-        if not (div is None):
-            text = div.text.encode('utf-8')
+        text = ''
+        blocks = soup.find('div', class_='lite-page block-set').find_all()
+        for div in blocks:
+            it_block = div.find('div', class_='lt-block')
+            if not it_block:
+                continue
+
+            if 'lt-modal-block' in it_block.attrs['class']:
+                continue
+            if it_block.find_all('button'):
+                continue
+            for p in it_block.find_all('p'):
+                text += p.text + '\n'
 
         videos = []
         for div in soup.find_all('div', id='player'):
@@ -192,7 +207,7 @@ class GetCourse:
 
         images = []
         for img in soup.find_all('div', class_='image-wrapper'):
-            images.append(protocol + img.find('img').attrs['src'])
+            images.append('https:' + img.find('img').attrs['src'])
 
-        return {'title': title, 'description': description, 'text': text, 'videos': videos, 'audio': urls_audios,
-                'images': images}
+        return True, {'description': description, 'text': text, 'videos': videos, 'audio': urls_audios,
+                      'images': images}
