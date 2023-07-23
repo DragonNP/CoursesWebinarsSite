@@ -1,7 +1,14 @@
+import uuid
+
 from django.db import models
 from django.contrib.auth.models import User
 from webinars.models import Webinar
 from courses.models import Module, Lesson
+
+
+class UserTaskLink(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    task_id = models.CharField(max_length=50)
 
 
 class UserWebinarLink(models.Model):

@@ -1,7 +1,6 @@
 FROM python:3.11-slim
 
 COPY requirements.txt /temp/requirements.txt
-COPY courses_webinars /courses_webinars
 WORKDIR /courses_webinars
 
 RUN apt-get update && apt-get install -y \
@@ -12,3 +11,5 @@ RUN apt-get update && apt-get install -y \
   && rm -rf /var/lib/apt/lists/*
 
 RUN pip install -r /temp/requirements.txt
+
+COPY courses_webinars /courses_webinars

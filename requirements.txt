@@ -40,3 +40,5 @@ vine==5.0.0
 wcwidth==0.2.6
 websockets==11.0.3
 yt-dlp==2023.7.6
+ffmpeg_progress_yield==0.7.8
+django-celery-results==2.5.1

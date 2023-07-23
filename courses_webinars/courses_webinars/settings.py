@@ -16,14 +16,11 @@ from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-STATICFILES_DIRS = [
-    BASE_DIR / "storage" / "static"
-]
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-5r2aimk5l^@1)4@9#*%t^r&s7s%fv12x+3^9(fjkf_zuv=p=g$'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -43,7 +40,10 @@ INSTALLED_APPS = [
     'users',
     'home',
     'courses',
-    'getCourse'
+    'getCourse',
+    'django_celery_results',
+    'tasks',
+    'materials'
 ]
 
 MIDDLEWARE = [
@@ -137,8 +137,12 @@ REDIS_HOST = config('REDIS_HOST')
 REDIS_PORT = config('REDIS_PORT')
 REDIS_PASSWORD = config('REDIS_PASSWORD')
 
+CELERY_TIME_ZONE = 'Europe/Moscow'
 CELERY_BROKER_URL = f'redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/0'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = False
 CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
+CELERY_RESULT_BACKEND = 'django-db'
+
+YANDEX_DISK_TOKEN = config('YANDEX_DISK_TOKEN')

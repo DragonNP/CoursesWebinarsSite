@@ -4,9 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render
 from getCourse import GetCourse
-from users.models import UserModuleLink, UserLessonLink
-from .models import Module, Material, Lesson, MaterialType
-import manage_files
+from users.models import UserModuleLink, UserLessonLink, UserTaskLink
+from .models import Module, Lesson
+import materials.tasks
+from materials.models import VideoType
 
 
 @login_required
@@ -94,6 +95,7 @@ def list(request):
         return HttpResponse(json.dumps(js))
 
 
+@login_required
 def _post_list(request):
     js = {'success': True, 'data': {}, 'errorMessage': ''}
 
@@ -138,8 +140,11 @@ def parse_list(user, get_course, parent, js):
             UserModuleLink.objects.create(user=user, module=module)
             parse_list(user, get_course, module, js[name][0])
         else:
-            information = get_course.get_info_from_lesson(js[name][0])
-            lesson = Lesson.objects.create(name=information['title'],
+            result = get_course.get_info_from_lesson(js[name][0])
+            if not result[0]:
+                continue
+            information = result[1]
+            lesson = Lesson.objects.create(name=name,
                                            module=parent,
                                            description=information['description'],
                                            text=information['text'])
@@ -148,49 +153,25 @@ def parse_list(user, get_course, parent, js):
 
             for image in information['images']:
                 image = image.replace('https:////', 'https://')
-                print('Скачивается фото', image)
 
-                materal = Material.objects.order_by('-id').first()
-                if materal:
-                    next_id = materal.id + 1
-                else:
-                    next_id = 0
-
-                url = manage_files.save_file('courses', next_id, image)
-                Material.objects.create(name='', url=url, lesson=lesson, type=MaterialType.IMAGE)
+                task_id = materials.tasks.add_image_to_lesson.delay(lesson.pk, image).id
+                UserTaskLink.objects.create(user=user, task_id=task_id)
 
             for video in information['videos']:
-                print('Сохраняется видео', video)
-
-                materal = Material.objects.order_by('-id').first()
-                if materal:
-                    next_id = materal.id + 1
-                else:
-                    next_id = 0
-
                 if video['type'] == 'youtube':
-                    url = manage_files.save_youtube_video('courses', next_id, video['url'])
+                    task_id = materials.tasks.add_video_to_lesson.delay(lesson.pk, video['url'], VideoType.YOUTUBE)
+                    UserTaskLink.objects.create(user=user, task_id=task_id)
                 elif video['type'] == 'm3u8':
-                    url = manage_files.save_m3u8_video('courses', next_id, video['url'])
+                    task_id = materials.tasks.add_video_to_lesson.delay(lesson.pk, video['url'], VideoType.M3U8)
+                    UserTaskLink.objects.create(user=user, task_id=task_id)
                 else:
-                    url = video['url']
                     print('Неизвестный тип', video)
 
-                Material.objects.create(name='', url=url, lesson=lesson, type=MaterialType.VIDEO)
-
             for audio in information['audio']:
-                print('Скачивается аудио', audio)
-
                 audio = audio.replace('https:////', 'https://')
 
-                materal = Material.objects.order_by('-id').first()
-                if materal:
-                    next_id = materal.id + 1
-                else:
-                    next_id = 0
-
-                url = manage_files.save_file('courses', next_id, audio)
-                Material.objects.create(name='', url=url, lesson=lesson, type=MaterialType.AUDIO)
+                task_id = materials.tasks.add_audio_to_lesson.delay(lesson.pk, audio)
+                UserTaskLink.objects.create(user=user, task_id=task_id)
 
 
 def _get_list(request):

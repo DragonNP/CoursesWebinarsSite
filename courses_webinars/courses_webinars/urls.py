@@ -21,6 +21,7 @@ from courses import views as courses
 from home import views as home
 from webinars import views as webinars
 from users import views as user
+from tasks import views as task
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -49,9 +50,15 @@ urlpatterns += [
 
 # URL для аккаунта
 urlpatterns += [
+    path('api/v1/accounts/tasks', user.get_tasks, name='api_users_tasks'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/profile/', user.profile, name='my_profile'),
     path('accounts/registration/', user.registration, name='registration')
+]
+
+# URL для tasks
+urlpatterns += [
+    path('api/v1/tasks/<str:task_id>', task.get, name='api_tasks_get'),
 ]
 """
 accounts/ login/ [name='login']
