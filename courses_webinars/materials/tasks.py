@@ -8,9 +8,9 @@ from .downloader import Downloader
 from .models import MaterialLesson, MaterialType, VideoType
 
 ya_disk = YaDisk(YANDEX_DISK_TOKEN)
-ya_disk.create_root_dir('courses_webinars')
-ya_disk.create_folder('materials')
-ya_disk.create_folder('materials/lesson')
+# ya_disk.create_root_dir('courses_webinars')
+# ya_disk.create_folder('materials')
+# ya_disk.create_folder('materials/lesson')
 
 downloader = Downloader(BASE_DIR)
 
