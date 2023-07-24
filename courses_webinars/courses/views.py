@@ -75,8 +75,9 @@ def show_lesson(request, id):
     context['lesson']['videos'] = []
     context['lesson']['photos'] = []
     context['lesson']['audios'] = []
+    context['lesson']['files'] = []
 
-    materials_lesson = MaterialLesson.objects.filter(lesson=lesson)
+    materials_lesson = MaterialLesson.objects.filter(lesson=lesson, is_saved=True)
     for material in materials_lesson:
         filename = str(material.pk) + '.' + material.extension
         res = materials.tasks.get_link(filename)
@@ -90,6 +91,8 @@ def show_lesson(request, id):
             context['lesson']['photos'] += [res[1]]
         elif material.type == MaterialType.AUDIO:
             context['lesson']['audios'] += [{'url': res[1], 'extension': material.extension}]
+        elif material.type == MaterialType.FILE:
+            context['lesson']['files'] += [{'url': res[1], 'name': material.name}]
 
     context['lesson']['watched'] = user_lesson_link.is_watched
     context['lesson']['name'] = lesson.name

@@ -45,7 +45,7 @@
 </div>
 
 <div class="row mb-4">
-    <div class="col-md-6 mb-4">
+    <div class="col-md-4 mb-4">
         <div class="card">
             <h5 class="card-header text-center">Фотографии</h5>
             <div class="card-body">
@@ -82,7 +82,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6 mb-4">
+    <div class="col-md-4 mb-4">
         <div class="card">
             <h5 class="card-header text-center">Аудио</h5>
             <div class="card-body">
@@ -90,6 +90,16 @@
                 <audio controls>
                     <source src="{{audio.url}}" type="audio/{{audio.extension}}"/>
                 </audio>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <h5 class="card-header text-center">Файлы</h5>
+            <div class="card-body">
+                {% for file in lesson.files %}
+                <a href="{{file.url}}" class="btn btn-outline-secondary mb-2">{{file.name}}</a>
                 {% endfor %}
             </div>
         </div>

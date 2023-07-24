@@ -8,6 +8,7 @@ services:
     volumes:
       - /home/nikita/docker-containers/rabbitmq:/var/lib/rabbitmq
       - /home/nikita/docker-containers/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - /home/nikita/docker-containers/rabbitmq/advanced.config:/etc/rabbitmq/advanced.config
     ports:
       - "15672:15672"
       - "5672:5672"
