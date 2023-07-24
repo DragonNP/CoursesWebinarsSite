@@ -137,7 +137,15 @@ def _post_list(request):
     if res[0]:
         for name in courses.keys():
             if courses[name][1] == 'module':
-                module = Module.objects.create(name=name, is_root=True)
+                module = Module.objects.filter(name=name, is_root=True).first()
+                if not module:
+                    module = Module.objects.create(name=name, is_root=True)
+                else:
+                    link = UserModuleLink.objects.filter(user=request.user, module=module).first()
+                    if not link:
+                        module = Module.objects.create(name=name, is_root=True)
+                        UserModuleLink.objects.create(user=request.user, module=module)
+
                 UserModuleLink.objects.create(user=request.user, module=module)
                 parse_list(request.user, get_course, module, courses[name][0])
             else:
@@ -155,8 +163,16 @@ def _post_list(request):
 def parse_list(user, get_course, parent, js):
     for name in js.keys():
         if js[name][1] == 'module':
-            module = Module.objects.create(name=name, parent=parent, is_root=False)
-            UserModuleLink.objects.create(user=user, module=module)
+            module = Module.objects.filter(name=name, parent=parent, is_root=False).first()
+            if not module:
+                module = Module.objects.create(name=name, parent=parent, is_root=False)
+                UserModuleLink.objects.create(user=user, module=module)
+            else:
+                link = UserModuleLink.objects.filter(user=user, module=module).first()
+                if not link:
+                    module = Module.objects.create(name=name, parent=parent, is_root=False)
+                    UserModuleLink.objects.create(user=user, module=module)
+
             parse_list(user, get_course, module, js[name][0])
         else:
             result = get_course.get_info_from_lesson(js[name][0])

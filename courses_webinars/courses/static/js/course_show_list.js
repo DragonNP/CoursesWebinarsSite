@@ -12,7 +12,6 @@ function add_lesson(k, url, r, ls_index, data_id) {
     input.setAttribute("data-id", data_id);
     input.setAttribute("placeholder", "Урок");
     input.setAttribute("required", "");
-    input.setAttribute("disabled", "");
 
     var div_group = document.createElement("div");
     div_group.setAttribute("class", "input-group mb-1");
@@ -66,7 +65,6 @@ function add_module(name, data, r, ls_index) {
     input.setAttribute("data-type", "module");
     input.setAttribute("placeholder", "Модуль");
     input.setAttribute("required", "");
-    input.setAttribute("disabled", "");
 
     var div_group = document.createElement("div");
     div_group.setAttribute("class", "input-group mb-1");
