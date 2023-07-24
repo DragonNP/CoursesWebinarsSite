@@ -186,6 +186,10 @@ def parse_list(user, get_course, parent, js):
                 task_id = materials.tasks.add_audio_to_lesson.delay(lesson.pk, audio)
                 UserTaskLink.objects.create(user=user, task_id=task_id)
 
+            for file in information['files']:
+                task_id = materials.tasks.add_file_to_lesson.delay(lesson.pk, file)
+                UserTaskLink.objects.create(user=user, task_id=task_id)
+
 
 def _get_list(request):
     js = {'success': True, 'data': {}, 'errorMessage': ''}

@@ -55,7 +55,24 @@ class Downloader:
         except Exception as e:
             return False, e
 
-    def save_file(self, url: str):
+    def save_file(self, data: dict):
+        base_dir = self._base_dir
+
+        self._check_path()
+
+        filename = data['filename']
+        path_to_save = f'{base_dir}/temp/{filename}'
+
+        try:
+            with urlopen(data['url']) as file:
+                content = file.read()
+            with open(path_to_save, 'wb') as download:
+                download.write(content)
+            return True, filename
+        except Exception as e:
+            return False, e
+
+    def save_audio_image(self, url: str):
         base_dir = self._base_dir
 
         self._check_path()

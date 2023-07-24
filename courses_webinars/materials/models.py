@@ -11,11 +11,13 @@ class MaterialType:
     VIDEO = "VIDEO"
     IMAGE = "IMAGE"
     AUDIO = "AUDIO"
+    FILE = "FILE"
 
     CHOICES = (
         (VIDEO, "video"),
         (IMAGE, "image"),
-        (AUDIO, "audio")
+        (AUDIO, "audio"),
+        (FILE, "file")
     )
 
 

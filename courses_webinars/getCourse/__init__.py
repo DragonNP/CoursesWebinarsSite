@@ -176,6 +176,7 @@ class GetCourse:
         else:
             description = soup.find('span', class_='lesson-description-value').text
 
+        files = []
         images = []
         text = ''.encode('utf-8')
         blocks = soup.find('div', class_='lite-page block-set').find_all()
@@ -187,6 +188,11 @@ class GetCourse:
             if 'lt-modal-block' in it_block.attrs['class']:
                 continue
             if it_block.find_all('button'):
+                continue
+
+            if 'lt-lesson-files' in it_block.attrs['class']:
+                a = it_block.find('a')
+                files.append({'filename': a.get_text(strip=True), 'url': a.attrs['href']})
                 continue
             for img in it_block.find_all('img'):
                 images.append('https:' + img.attrs['src'])
@@ -213,4 +219,4 @@ class GetCourse:
             urls_audios.append(audio.attrs['src'])
 
         return True, {'description': description, 'text': text, 'videos': videos, 'audio': urls_audios,
-                      'images': images}
+                      'images': images, 'files': files}

@@ -41,7 +41,7 @@ def add_video_to_lesson(self, lesson_pk: int, url: str, video_type: VideoType):
 @shared_task(bind=True)
 def add_audio_to_lesson(self, lesson_pk: int, url: str):
     self.update_state(state='PROGRESS', meta={'process_percent': 0})
-    result = downloader.save_file(url)
+    result = downloader.save_audio_image(url)
 
     _base_task_for_lesson(self, lesson_pk, result, MaterialType.AUDIO)
 
@@ -49,9 +49,17 @@ def add_audio_to_lesson(self, lesson_pk: int, url: str):
 @shared_task(bind=True)
 def add_image_to_lesson(self, lesson_pk: int, url: str):
     self.update_state(state='PROGRESS', meta={'process_percent': 0})
-    result = downloader.save_file(url)
+    result = downloader.save_audio_image(url)
 
     _base_task_for_lesson(self, lesson_pk, result, MaterialType.IMAGE)
+
+
+@shared_task(bind=True)
+def add_file_to_lesson(self, lesson_pk: int, data: dict):
+    self.update_state(state='PROGRESS', meta={'process_percent': 0})
+    result = downloader.save_file(data)
+
+    _base_task_for_lesson(self, lesson_pk, result, MaterialType.FILE)
 
 
 def _base_task_for_lesson(current_task, lesson_pk, result_download, material_type: MaterialType):
