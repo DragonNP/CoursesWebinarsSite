@@ -1,6 +1,6 @@
 import requests
 import json
-
+from .progress_upload import ProgressUpload
 
 class YandexDiskResources:
     def __init__(self, token: str):
@@ -57,20 +57,19 @@ class YandexDiskResources:
             print(f'Непредвиденная ошибка: {body["error"]}')
             return False, body
 
-    def upload_file(self, path: str, path_to_file: str):
+    def upload_file(self, path: str, path_to_file: str, callback):
         """Загрузить файл"""
         link = self._get_upload_link(path)
 
         if not link[0]:
             return False, link[1]
 
-        with open(path_to_file, 'rb') as file:
-            response = requests.put(link[1], data=file)
-            print(response.text)
-            body = response.json() if len(response.text) != 0 else {}
-            body['status_code'] = response.status_code
-            return True, body
 
+        response = requests.put(link[1], data=ProgressUpload(callback, path_to_file))
+
+        body = response.json() if len(response.text) != 0 else {}
+        body['status_code'] = response.status_code
+        return True, body
     def _get_upload_link(self, path):
         """Получить ссылку для загрузки файла"""
         base_url = self._base_url

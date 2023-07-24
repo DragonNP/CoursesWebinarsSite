@@ -9,12 +9,12 @@ class Downloader:
     def __init__(self, base_dir):
         self._base_dir = str(base_dir)
 
-    def save_youtube_video(self, celery_task, url: str):
+    def save_youtube_video(self, url: str, callback):
         def empty(d):
             pass
 
         def update_progress(d):
-            celery_task.update_state(state='PROGRESS', meta={'process_percent': float(d['_percent_str'][:-1]) / 5})
+            callback(float(d['_percent_str'][:-1]))
 
         base_dir = self._base_dir
 
@@ -34,7 +34,7 @@ class Downloader:
         except yt_dlp.utils.DownloadError as e:
             return False, e
 
-    def save_m3u8_video(self, celery_task, url: str):
+    def save_m3u8_video(self, url: str, callback):
         base_dir = self._base_dir
 
         self._check_path()
@@ -50,7 +50,7 @@ class Downloader:
 
             ff = FfmpegProgress(cmd)
             for progress in ff.run_command_with_progress():
-                celery_task.update_state(state='PROGRESS', meta={'process_percent': progress / 5})
+                callback(progress)
             return True, filename
         except Exception as e:
             return False, e
