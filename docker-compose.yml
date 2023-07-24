@@ -7,10 +7,12 @@ services:
       - .env
     volumes:
       - /home/nikita/docker-containers/rabbitmq:/var/lib/rabbitmq
+      - /home/nikita/docker-containers/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
     ports:
       - "15672:15672"
       - "5672:5672"
     restart: always
+
   courses_webinars_web:
     build:
       context: .
@@ -18,35 +20,39 @@ services:
     hostname: courses_webinars_web
     ports:
       - "8000:8000"
-    volumes:
-      - ./courses_webinars:/courses_webinars
     env_file:
       - .env
     command: >
       sh -c "python manage.py runserver 0.0.0.0:8000"
+    restart: always
+    depends_on:
+      - celery_worker
 
   celery_worker:
     build:
       context: .
     container_name: celery_worker
     hostname: celery_worker
-    volumes:
-      - ./courses_webinars:/courses_webinars
     env_file:
       - .env
     entrypoint: celery
-    command: -A celery_app.app worker --loglevel=info
+    command: -A celery_app.app worker --loglevel=info --concurrency=1
+    restart: always
+    depends_on:
+      - rabbitmq
 
   celery_flower:
     build:
       context: .
     container_name: celery_flower
     hostname: celery_flower
-    volumes:
-      - ./courses_webinars:/courses_webinars
     env_file:
       - .env
     entrypoint: celery
-    command: -A celery_app.app flower --loglevel=info
+    command: -A celery_app.app flower --loglevel=info --conf="./courses_webinars/flowerconfig.py"
     ports:
       - "5555:5555"
+    restart: always
+    depends_on:
+      - rabbitmq
+      - celery_worker

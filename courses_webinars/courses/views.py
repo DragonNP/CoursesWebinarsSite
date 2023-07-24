@@ -7,7 +7,7 @@ from getCourse import GetCourse
 from users.models import UserModuleLink, UserLessonLink, UserTaskLink
 from .models import Module, Lesson
 import materials.tasks
-from materials.models import VideoType
+from materials.models import VideoType, MaterialLesson, MaterialType
 
 
 @login_required
@@ -71,6 +71,25 @@ def show_lesson(request, id):
 
     lesson = Lesson.objects.get(pk=id)
     user_lesson_link = UserLessonLink.objects.get(user=user, lesson=lesson)
+
+    context['lesson']['videos'] = []
+    context['lesson']['photos'] = []
+    context['lesson']['audios'] = []
+
+    materials_lesson = MaterialLesson.objects.filter(lesson=lesson)
+    for material in materials_lesson:
+        filename = str(material.pk) + '.' + material.extension
+        res = materials.tasks.get_link(filename)
+        if not res[0]:
+            print(res[1])
+            continue
+
+        if material.type == MaterialType.VIDEO:
+            context['lesson']['videos'] += [{'url': res[1], 'extension': material.extension}]
+        elif material.type == MaterialType.IMAGE:
+            context['lesson']['photos'] += [res[1]]
+        elif material.type == MaterialType.AUDIO:
+            context['lesson']['audios'] += [{'url': res[1], 'extension': material.extension}]
 
     context['lesson']['watched'] = user_lesson_link.is_watched
     context['lesson']['name'] = lesson.name

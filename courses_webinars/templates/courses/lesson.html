@@ -8,7 +8,6 @@
 
 
 {% block content %}
-<link href="https://vjs.zencdn.net/8.3.0/video-js.css" rel="stylesheet"/>
 <div class="row mb-4">
     <div class="col-12 text-right">
         {% if lesson.watched == True %}
@@ -23,22 +22,77 @@
 
 <div class="row mb-4">
     <div class="col-12">
-        {% if lesson.watched == True %}
+    {% if lesson.watched == True %}
         <div class="card border-success">
-        {% else %}
+    {% else %}
         <div class="card border-danger">
-            {% endif %}
+    {% endif %}
             <div class="card-body">
                 <h1 class="card-title text-center">{{lesson.name}}</h1>
                 <h6 class="card-subtitle mb-2 text-muted">{{lesson.description}}</h6>
                 <p class="card-text">{{lesson.text}}</p>
+
+                {% for video in lesson.videos %}
+                <div class="embed-responsive embed-responsive-16by9 m-b-2 mb-2">
+                    <video class="video-fluid z-depth-1" controls="">
+                        <source src="{{video.url}}" type="video/{{video.extension}}"/>
+                    </video>
+                </div>
+                {% endfor %}
             </div>
         </div>
     </div>
 </div>
 
+<div class="row mb-4">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <h5 class="card-header text-center">Фотографии</h5>
+            <div class="card-body">
+                <div id="photo_carousel" class="carousel slide" data-ride="carousel">
+                    <ol class="carousel-indicators">
+                        {% for url in lesson.photos %}
+                        {% if forloop.counter == 1 %}
+                        <li data-target="#photo_carousel" data-slide-to="{{forloop.counter0}}" class="active"></li>
+                        {% else %}
+                        <li data-target="#photo_carousel" data-slide-to="{{forloop.counter0}}"></li>
+                        {% endif %}
+                        {% endfor %}
+                    </ol>
+                    <div class="carousel-inner">
+                        {% for url in lesson.photos %}
+                        {% if forloop.counter == 1 %}
+                        <div class="carousel-item active">
+                        {% else %}
+                        <div class="carousel-item">
+                        {% endif %}
+                            <img class="d-block w-100" style="width:50%;" src="{{url}}" alt="{{forloop.counter}} фото">
+                        </div>
+                        {% endfor %}
+                        <a class="carousel-control-prev" href="#photo_carousel" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Предыдущее</span>
+                        </a>
+                        <a class="carousel-control-next" href="#photo_carousel" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Следующее</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <h5 class="card-header text-center">Аудио</h5>
+            <div class="card-body">
+                {% for audio in lesson.audios %}
+                <audio controls>
+                    <source src="{{audio.url}}" type="audio/{{audio.extension}}"/>
+                </audio>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}
-
-{% block custom_scripts %}
-<script src="https://vjs.zencdn.net/8.3.0/video.min.js"></script>
-{% endblock custom_scripts %}
