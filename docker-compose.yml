@@ -1,4 +1,16 @@
 services:
+  rabbitmq:
+    image: rabbitmq:3.12.2-management
+    container_name: rabbitmq
+    hostname: rabbitmq
+    env_file:
+      - .env
+    volumes:
+      - /home/nikita/docker-containers/rabbitmq:/var/lib/rabbitmq
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    restart: always
   courses_webinars_web:
     build:
       context: .
