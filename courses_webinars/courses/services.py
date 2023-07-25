@@ -1,4 +1,5 @@
 import json
+import re
 
 from django.contrib.auth.models import User
 
@@ -112,6 +113,11 @@ def get_list_courses_from_get_course(parameters) -> dict:
         return js
 
     url: str = parameters['url']
+    if not _check_url_is_valid(url):
+        js['success'] = False
+        js['errorMessage'] = 'Ссылка не валидная'
+        return js
+
     email: str = parameters['email']
     password: str = parameters['password']
     host = _get_host_from_url(url)
@@ -274,3 +280,12 @@ def _create_or_get_root_module(user, name) -> Module:
             UserRootModuleLink.objects.create(user=user, module=module, is_favorite=False, is_watched=False, is_my=True)
 
     return module
+
+
+def _check_url_is_valid(url):
+    """Проверяет ссылку на валидность"""
+    regex = re.compile(r'(https?:\/\/)?'
+                       r'(?:(?:[a-zA-Z\u00a1-\uffff0-9]+-?)'
+                       r'*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:'
+                       r'\.(?:[a-zA-Z\u00a1-\uffff]{2,}))(?::\d{2,5})?(?:\/[^\s]*)?')
+    return re.match(regex, url)
