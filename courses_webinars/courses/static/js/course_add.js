@@ -34,7 +34,7 @@ async function save_list(event) {
         }
     }
     body = {'account': {'url': account_url, 'email': account_email, 'password': account_password}, 'data': js}
-    url = '/api/v1/curses/list';
+    url = '/api/v1/curses/get_course';
     const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -121,7 +121,7 @@ function serializeFormList(formNode) {
 
 async function form_send(form){
     document.getElementById("div_alert").style.display = "none";
-    url = '/api/v1/curses/list'
+    url = '/api/v1/curses/get_course'
     params = serializeFormLogin(form);
 
     toggleButton();

@@ -26,7 +26,7 @@ class GetCourse:
 
         body = {
             'action': 'processXdget',
-            'xdgetId': '99945',  # TODO: Извелкать из первоначальной страницы
+            'xdgetId': '99945',  # TODO: Извлекать из первоначальной страницы
             'params[action]': 'login',
             'params[email]': email,
             'params[password]': password
@@ -39,12 +39,12 @@ class GetCourse:
         try:
             result = json.loads(response.text)
         except json.decoder.JSONDecodeError as e:
-            return False, 'Данный сайт не поддерживается'
+            return {'success': False, 'message': 'Данный сайт не поддерживается'}
 
         if 'errorMessage' in result:
-            return False, result['errorMessage']
+            return {'success': False, 'message': result['errorMessage']}
         self.phpsessid5 = response.cookies['PHPSESSID5']
-        return True, ''
+        return {'success': True}
 
     def get_all_trenings(self):
         phpsessid5 = self.phpsessid5
@@ -159,7 +159,7 @@ class GetCourse:
                 lessons[div.decode_contents().strip()] = [protocol + host + div.attrs['href'], 'lesson']
         return lessons
 
-    def _extract_from_lesson_data(self, url):
+    def _extract_from_lesson_data(self, url) -> dict:
         phpsessid5 = self.phpsessid5
         headers = self.headers
 
@@ -168,8 +168,7 @@ class GetCourse:
 
         err_div = soup.find('div', style='border: 3px dashed red; padding: 30px; padding-top: 10px; margin-top: 20px; ')
         if err_div and err_div.find('h3') and err_div.find('h3').text == 'Нет доступа':
-            print('Нет доступа к уроку')
-            return False, {}
+            return {'success': False, 'message': 'Нет доступа к уроку'}
 
         if soup.find('span', class_='lesson-description-value') is None:
             description = ''
@@ -198,8 +197,8 @@ class GetCourse:
                         stop = 0
                         i = 0
                         while i < len(text_script):
-                            if start == 0 and text_script[i:i+6] == 'mp3: "':
-                                start = i+6
+                            if start == 0 and text_script[i:i + 6] == 'mp3: "':
+                                start = i + 6
                                 i += 6
                                 continue
                             if start != 0 and text_script[i] == '"':
@@ -240,5 +239,5 @@ class GetCourse:
         for audio in soup.find_all('audio'):
             audios.append(audio.attrs['src'])
 
-        return True, {'description': description, 'text': text, 'videos': videos, 'audios': audios,
-                      'images': images, 'files': files}
+        return {'success': True, 'data': {'description': description, 'text': text, 'videos': videos, 'audios': audios,
+                                          'images': images, 'files': files}}

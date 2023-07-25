@@ -15,9 +15,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.contrib.auth.decorators import login_required
 from django.urls import path, include
 
 from courses import views as courses
+from courses.views import GetCourseView
 from home import views as home
 from webinars import views as webinars
 from users import views as user
@@ -30,11 +32,11 @@ urlpatterns = [
 
 # URL для курсов
 urlpatterns += [
-    path('api/v1/curses/list', courses.list, name='api_curses_list'),
-    path('courses/my/', courses.my, name='my_courses'),
+    path('api/v1/curses/get_course', login_required(GetCourseView.as_view())),
+    path('courses/my/', courses.send_user_courses_view, name='my_courses'),
     path('courses/add/', courses.add, name='add_course'),
-    path('courses/modules/<str:id>/', courses.show_module, name='show_module'),
-    path('courses/lessons/<str:id>/', courses.show_lesson, name='show_lesson'),
+    path('courses/modules/<str:module_pk>/', courses.send_user_courses_view, name='show_module'),
+    path('courses/lessons/<str:lesson_pk>/', courses.send_lesson_view, name='show_lesson'),
 ]
 
 # URL для вебинаров

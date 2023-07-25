@@ -21,10 +21,12 @@ class UserWebinarLink(models.Model):
         unique_together = ('user', 'webinar')
 
 
-class UserModuleLink(models.Model):
+class UserRootModuleLink(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     module = models.ForeignKey(Module, on_delete=models.CASCADE)
+    is_favorite = models.BooleanField(default=False)
     is_watched = models.BooleanField(default=False)
+    is_my = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('user', 'module')
