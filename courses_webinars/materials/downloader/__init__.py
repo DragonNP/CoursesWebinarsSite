@@ -1,3 +1,4 @@
+import urllib
 from urllib.request import urlopen
 import yt_dlp
 import os
@@ -55,7 +56,9 @@ class Downloader:
         except Exception as e:
             return False, e
 
-    def save_file(self, data: dict):
+    def save_file(self, data: dict, cookies=None):
+        if cookies is None:
+            cookies = dict()
         base_dir = self._base_dir
 
         self._check_path()
@@ -64,7 +67,14 @@ class Downloader:
         path_to_save = f'{base_dir}/temp/{filename}'
 
         try:
-            with urlopen(data['url']) as file:
+            headers = {}
+            if cookies != {}:
+                headers['Cookie'] = ''
+                for name in cookies:
+                    headers['Cookie'] += f'{name}={cookies[name]};'
+
+            request = urllib.request.Request(data['url'], headers=headers)
+            with urlopen(request) as file:
                 content = file.read()
             with open(path_to_save, 'wb') as download:
                 download.write(content)

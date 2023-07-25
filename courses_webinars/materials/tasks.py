@@ -4,6 +4,7 @@ from celery import shared_task, states
 from celery.exceptions import Ignore
 from celery.utils.log import get_task_logger
 
+from courses.getCourse import GetCourse
 from courses_webinars.settings import YANDEX_DISK_TOKEN, BASE_DIR
 from users.models import UserTaskLink
 from .yandex_disk import YandexDiskResources as YaDisk
@@ -55,9 +56,16 @@ def add_image_to_lesson(self, lesson_pk: int, url: str):
 
 
 @shared_task(bind=True)
-def add_file_to_lesson(self, lesson_pk: int, data: dict):
+def add_file_to_lesson(self, lesson_pk: int, data: dict, get_course_data: dict):
     self.update_state(state='PROGRESS', meta={'process_percent': 0})
-    result = downloader.save_file(data)
+
+    get_course = GetCourse(get_course_data['host'])
+    get_course.login(get_course_data['email'], get_course_data['password'])
+    cookies = {
+        'PHPSESSID5': get_course.phpsessid5
+    }
+
+    result = downloader.save_file(data, cookies=cookies)
 
     _base_task_for_lesson(self, lesson_pk, result, MaterialType.FILE)
 

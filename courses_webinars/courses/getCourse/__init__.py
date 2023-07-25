@@ -44,7 +44,17 @@ class GetCourse:
         if 'errorMessage' in result:
             return {'success': False, 'message': result['errorMessage']}
         self.phpsessid5 = response.cookies['PHPSESSID5']
+        self.email = email
+        self.password = password
+
         return {'success': True}
+
+    def get_data_authentications(self) -> dict:
+        return {
+            'host': self.host,
+            'email': self.email,
+            'password': self.password
+        }
 
     def get_all_trenings(self):
         phpsessid5 = self.phpsessid5

@@ -228,7 +228,7 @@ def _create_lesson(get_course, url, name, parent_module, root_module, user) -> s
 
     # Для файлов
     for file in information['files']:
-        task_id = materials.tasks.add_file_to_lesson.delay(lesson.pk, file)
+        task_id = materials.tasks.add_file_to_lesson.delay(lesson.pk, file, get_course.get_data_authentications())
         UserTaskLink.objects.create(user=user, task_id=task_id)
 
     return ''
