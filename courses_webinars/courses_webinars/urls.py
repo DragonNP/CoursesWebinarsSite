@@ -35,7 +35,7 @@ urlpatterns += [
     path('api/v1/curses/get_course', login_required(GetCourseView.as_view())),
     path('courses/my/', courses.send_user_courses_view, name='my_courses'),
     path('courses/add/', courses.add, name='add_course'),
-    path('courses/modules/<str:module_pk>/', courses.send_user_courses_view, name='show_module'),
+    path('courses/modules/<str:module_pk>/', courses.send_module_view, name='show_module'),
     path('courses/lessons/<str:lesson_pk>/', courses.send_lesson_view, name='show_lesson'),
 ]
 

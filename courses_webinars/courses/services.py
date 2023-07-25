@@ -67,7 +67,7 @@ def get_context_for_lesson(user: User, lesson_pk: str) -> dict:
     context = {'lesson': {}}
 
     lesson = Lesson.objects.get(pk=lesson_pk)
-    user_lesson_link = UserLessonLink.objects.get(user=user, lesson=lesson)
+    user_lesson_link = UserLessonLink.objects.filter(user=user, lesson=lesson).first()
 
     videos = []
     photos = []
@@ -89,11 +89,15 @@ def get_context_for_lesson(user: User, lesson_pk: str) -> dict:
         elif material.type == MaterialType.FILE:
             files += [{'url': res[1], 'name': material.name}]
 
+    if not user_lesson_link:
+        context['lesson']['watched'] = False
+    else:
+        context['lesson']['watched'] = user_lesson_link.is_watched
+
     context['lesson']['videos'] = videos
     context['lesson']['photos'] = photos
     context['lesson']['audios'] = audios
     context['lesson']['files'] = files
-    context['lesson']['watched'] = user_lesson_link.is_watched
     context['lesson']['name'] = lesson.name
     context['lesson']['text'] = lesson.text.decode('utf-8')
 

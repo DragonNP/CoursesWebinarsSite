@@ -48,4 +48,4 @@ class GetCourseView(View):
 
     def post(self, request):
         response = save_courses(request.user, request.body)
-        return response
+        return HttpResponse(json.dumps(response))
