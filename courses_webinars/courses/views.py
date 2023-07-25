@@ -201,7 +201,7 @@ def parse_list(user, get_course, parent, js):
                     task_id = materials.tasks.add_video_to_lesson.delay(lesson.pk, video['url'], VideoType.M3U8)
                     UserTaskLink.objects.create(user=user, task_id=task_id)
 
-            for audio in information['audio']:
+            for audio in information['audios']:
                 task_id = materials.tasks.add_audio_to_lesson.delay(lesson.pk, audio)
                 UserTaskLink.objects.create(user=user, task_id=task_id)
 

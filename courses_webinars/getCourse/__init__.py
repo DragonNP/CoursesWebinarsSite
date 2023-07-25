@@ -176,6 +176,7 @@ class GetCourse:
         else:
             description = soup.find('span', class_='lesson-description-value').text
 
+        audios = []
         files = []
         images = []
         text = ''.encode('utf-8')
@@ -187,6 +188,28 @@ class GetCourse:
 
             if 'lt-modal-block' in it_block.attrs['class']:
                 continue
+
+            if 'lt-lesson-audio' in it_block.attrs['class']:
+                scripts = it_block.find_all('script')
+                for script in scripts:
+                    if 'jPlayerPlaylist' in script.text:
+                        text_script = script.decode_contents().strip()
+                        start = 0
+                        stop = 0
+                        i = 0
+                        while i < len(text_script):
+                            if start == 0 and text_script[i:i+6] == 'mp3: "':
+                                start = i+6
+                                i += 6
+                                continue
+                            if start != 0 and text_script[i] == '"':
+                                stop = i
+                                break
+                            i += 1
+                        url = text_script[start:stop]
+                        audios.append(url)
+                continue
+
             if it_block.find_all('button'):
                 continue
 
@@ -214,9 +237,8 @@ class GetCourse:
                     videos.append({'url': m3u8, 'type': 'm3u8'})
                     break
 
-        urls_audios = []
         for audio in soup.find_all('audio'):
-            urls_audios.append(audio.attrs['src'])
+            audios.append(audio.attrs['src'])
 
-        return True, {'description': description, 'text': text, 'videos': videos, 'audio': urls_audios,
+        return True, {'description': description, 'text': text, 'videos': videos, 'audios': audios,
                       'images': images, 'files': files}
