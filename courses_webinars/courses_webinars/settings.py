@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'users',
     'home',
     'courses',
-    'getCourse',
     'django_celery_results',
     'tasks',
     'materials'
