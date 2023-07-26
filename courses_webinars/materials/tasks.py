@@ -25,7 +25,7 @@ def get_link(filename):
     return result
 
 
-@shared_task(bind=True, task_acks_late=True)
+@shared_task(bind=True, acks_late=True, reject_on_worker_lost=True)
 def add_video_to_lesson(self, lesson_pk: int, url: str, video_type: VideoType):
     def callback_video(percent):
         callback_update_percent(self, percent, 0, 30)
@@ -39,7 +39,7 @@ def add_video_to_lesson(self, lesson_pk: int, url: str, video_type: VideoType):
     _base_task_for_lesson(self, lesson_pk, result, MaterialType.VIDEO)
 
 
-@shared_task(bind=True, task_acks_late=True)
+@shared_task(bind=True, acks_late=True, reject_on_worker_lost=True)
 def add_audio_to_lesson(self, lesson_pk: int, url: str):
     self.update_state(state='PROGRESS', meta={'process_percent': 0})
     result = downloader.save_audio_image(url)
@@ -47,7 +47,7 @@ def add_audio_to_lesson(self, lesson_pk: int, url: str):
     _base_task_for_lesson(self, lesson_pk, result, MaterialType.AUDIO)
 
 
-@shared_task(bind=True, task_acks_late=True)
+@shared_task(bind=True, acks_late=True, reject_on_worker_lost=True)
 def add_image_to_lesson(self, lesson_pk: int, url: str):
     self.update_state(state='PROGRESS', meta={'process_percent': 0})
     result = downloader.save_audio_image(url)
@@ -55,7 +55,7 @@ def add_image_to_lesson(self, lesson_pk: int, url: str):
     _base_task_for_lesson(self, lesson_pk, result, MaterialType.IMAGE)
 
 
-@shared_task(bind=True, task_acks_late=True)
+@shared_task(bind=True, acks_late=True, reject_on_worker_lost=True)
 def add_file_to_lesson(self, lesson_pk: int, data: dict, get_course_data: dict):
     self.update_state(state='PROGRESS', meta={'process_percent': 0})
 
