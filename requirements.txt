@@ -22,7 +22,7 @@ mutagen==1.46.0
 mysqlclient==2.2.0
 prometheus-client==0.17.1
 prompt-toolkit==3.0.39
-pycryptodome==3.18.0
+pycryptodome==3.19.1
 pycryptodomex==3.18.0
 python-dateutil==2.8.2
 python-decouple==3.8
