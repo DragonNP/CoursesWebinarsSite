@@ -24,9 +24,13 @@ class GetCourse:
 
         request_url = f'{protocol}{host}/cms/system/login'
 
+        response = requests.post(request_url, headers=headers)
+        html = response.text
+        soup = BeautifulSoup(html, "html.parser")
+
         body = {
             'action': 'processXdget',
-            'xdgetId': '99945',  # TODO: Извлекать из первоначальной страницы
+            'xdgetId': soup.find('form').attrs['data-xdget-id'],
             'params[action]': 'login',
             'params[email]': email,
             'params[password]': password

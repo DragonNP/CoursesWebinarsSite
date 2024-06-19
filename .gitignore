@@ -2,3 +2,4 @@
 .idea
 /courses_webinars/storage/static/courses/*
 /docker-compose-rpi.yml
+*/__pycache__
