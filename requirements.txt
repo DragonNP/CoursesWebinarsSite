@@ -39,6 +39,6 @@ urllib3==2.2.2
 vine==5.0.0
 wcwidth==0.2.6
 websockets==11.0.3
-yt-dlp==2024.4.9
+yt-dlp==2024.7.1
 ffmpeg_progress_yield==0.7.8
 django-celery-results==2.5.1
